@@ -3,10 +3,8 @@
                       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                       xmlns:controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
                       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-                      xmlns:local="clr-namespace:GeeksWithBlogsToMarkdown"
                       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-                      xmlns:nav="NavigationPane"
-                      xmlns:dragablz="http://dragablz.net/winfx/xaml/dragablz"
+                      xmlns:local="clr-namespace:GeeksWithBlogsToMarkdown.ViewModels"
                       Title="Geekswithblogs to Markdown"
                       Width="525"
                       Height="350"
@@ -14,15 +12,34 @@
                       BorderThickness="1"
                       WindowStartupLocation="CenterScreen"
                       WindowState="Maximized"
+                      x:Name="MetroWindow"
                       mc:Ignorable="d">
+    <controls:MetroWindow.DataContext>
+        <local:MainVewModel />
+    </controls:MetroWindow.DataContext>
+    <controls:MetroWindow.RightWindowCommands>
+        <controls:WindowCommands>
+            <Button Content="settings" Command="{Binding ShowSettingsCommand}" CommandParameter="{Binding ElementName=MetroWindow}" />
+        </controls:WindowCommands>
+    </controls:MetroWindow.RightWindowCommands>
+    <controls:MetroWindow.Flyouts>
+        <controls:FlyoutsControl>
+            <controls:Flyout Header="Flyout" x:Name="SettingFlyout"
+                             Position="Right" Theme="Dark" 
+                             Width="500">
+                <!-- Your custom content here -->
+            </controls:Flyout>
+
+        </controls:FlyoutsControl>
+    </controls:MetroWindow.Flyouts>
     <controls:MetroContentControl>
         <Grid Margin="5">
             <Grid.RowDefinitions>
-                <RowDefinition Height="30" />
+                <RowDefinition Height="Auto" />
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
             <StackPanel Grid.Row="0"
-                        Orientation="Horizontal">
+                        Orientation="Horizontal" HorizontalAlignment="Right">
                 <Button Margin="0,0,5,0"
                         Content="Get posts from GWB" />
                 <Button Content="Save all as Markdown" />
@@ -107,4 +124,6 @@
         </Grid>
     </controls:MetroContentControl>
 </controls:MetroWindow>
+
+
 
