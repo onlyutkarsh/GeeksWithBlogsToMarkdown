@@ -1,6 +1,15 @@
 ﻿<ResourceDictionary x:Class="resources_icons_xaml"
 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
+     <Canvas x:Key="material_save" Width="24" Height="24" x:Shared="False">
+        <Path Data="M15,9H5V5H15M12,19A3,3 0 0,1 9,16A3,3 0 0,1 12,13A3,3 0 0,1 15,16A3,3 0 0,1 12,19M17,3H5C3.89,3 3,3.9 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V7L17,3Z" Fill="Black" />
+    </Canvas>
+    <Canvas x:Key="material_save_all" Width="24" Height="24">
+        <Path Data="M17,7V3H7V7H17M14,17A3,3 0 0,0 17,14A3,3 0 0,0 14,11A3,3 0 0,0 11,14A3,3 0 0,0 14,17M19,1L23,5V17A2,2 0 0,1 21,19H7C5.89,19 5,18.1 5,17V3A2,2 0 0,1 7,1H19M1,7H3V21H17V23H3A2,2 0 0,1 1,21V7Z" Fill="Black" />
+    </Canvas>
+    <Canvas x:Key="material_download"  Width="24" Height="24">
+        <Path Data="M5,20H19V18H5M19,9H15V3H9V9H5L12,16L19,9Z" Fill="Black" />
+    </Canvas>
     <Canvas x:Key="appbar_3d_3ds" x:Shared="False" Width="76" Height="76" Clip="F1 M 0,0L 76,0L 76,76L 0,76L 0,0">
         <Path Width="32" Height="40" Canvas.Left="23" Canvas.Top="18" Stretch="Fill" Fill="{DynamicResource BlackBrush}" Data="F1 M 27,18L 23,26L 33,30L 24,38L 33,46L 23,50L 27,58L 45,58L 55,38L 45,18L 27,18 Z "/>
     </Canvas>

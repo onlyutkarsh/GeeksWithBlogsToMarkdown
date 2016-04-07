@@ -5,9 +5,12 @@
                       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                       xmlns:local="clr-namespace:GeeksWithBlogsToMarkdown.ViewModels"
+                      xmlns:converters="clr-namespace:GeeksWithBlogsToMarkdown.Converters"
+                      xmlns:userControls="clr-namespace:GeeksWithBlogsToMarkdown.UserControls"
+                      xmlns:metro="clr-namespace:MahApps.Metro;assembly=MahApps.Metro"
                       Title="Geekswithblogs to Markdown"
-                      Width="525"
-                      Height="350"
+                      MinWidth="725"
+                      MinHeight="550"
                       BorderBrush="{DynamicResource AccentColorBrush}"
                       BorderThickness="1"
                       WindowStartupLocation="CenterScreen"
@@ -19,15 +22,24 @@
     </controls:MetroWindow.DataContext>
     <controls:MetroWindow.RightWindowCommands>
         <controls:WindowCommands>
-            <Button Content="settings" Command="{Binding ShowSettingsCommand}" CommandParameter="{Binding ElementName=MetroWindow}" />
+            <Button Content="settings"
+                    Command="{Binding ShowSettingsCommand}"
+                    CommandParameter="{Binding ElementName=MetroWindow}" />
         </controls:WindowCommands>
     </controls:MetroWindow.RightWindowCommands>
     <controls:MetroWindow.Flyouts>
         <controls:FlyoutsControl>
-            <controls:Flyout Header="Flyout" x:Name="SettingFlyout"
-                             Position="Right" Theme="Dark" 
-                             Width="500">
-                <!-- Your custom content here -->
+            <controls:Flyout Header="Settings"
+                             x:Name="SettingFlyout"
+                             Position="Right"
+                             Theme="Adapt"
+                             IsModal="True"
+                             Width="{Binding Path=ActualWidth, ElementName=MetroWindow, Converter={converters:SettingFlyoutWidthConverter}}">
+                <controls:Flyout.DataContext>
+                    <local:SettingsViewModel />
+                </controls:Flyout.DataContext>
+                <userControls:SettingsView />
+
             </controls:Flyout>
 
         </controls:FlyoutsControl>
@@ -39,10 +51,59 @@
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
             <StackPanel Grid.Row="0"
-                        Orientation="Horizontal" HorizontalAlignment="Right">
-                <Button Margin="0,0,5,0"
-                        Content="Get posts from GWB" />
-                <Button Content="Save all as Markdown" />
+                        Orientation="Horizontal"
+                        HorizontalAlignment="Right"
+                        ToolTip="Get posts from GWB">
+                <Button Width="50"
+                        Height="50"
+                        Style="{DynamicResource MetroCircleButtonStyle}"
+                        ToolTip="Get posts from GWB">
+                    <Rectangle Width="20"
+                               Height="20"
+                               Fill="{Binding Path=Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}}">
+                        <Rectangle.OpacityMask>
+                            <VisualBrush Stretch="Fill" Visual="{DynamicResource material_download}" />
+                        </Rectangle.OpacityMask>
+                    </Rectangle>
+                </Button>
+                <Button Width="50"
+                        Height="50"
+                        Style="{DynamicResource MetroCircleButtonStyle}"
+                        ToolTip="Save">
+                    <Rectangle Width="20"
+                               Height="20"
+                               Fill="{Binding Path=Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}}">
+                        <Rectangle.OpacityMask>
+                            <VisualBrush Stretch="Fill" Visual="{DynamicResource material_save}" />
+                        </Rectangle.OpacityMask>
+                    </Rectangle>
+                </Button>
+                <Button Width="50"
+                        Height="50"
+                        Style="{DynamicResource MetroCircleButtonStyle}"
+                        ToolTip="Save all">
+                    <Rectangle Width="20"
+                               Height="20"
+                               Fill="{Binding Path=Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}}">
+                        <Rectangle.OpacityMask>
+                            <VisualBrush Stretch="Fill" Visual="{DynamicResource material_save_all}" />
+                        </Rectangle.OpacityMask>
+                    </Rectangle>
+                </Button>
+                <Button Width="50"
+                        Height="50"
+                        Style="{DynamicResource MetroCircleButtonStyle}"
+                        Command="{Binding ShowSettingsCommand}"
+                        CommandParameter="{Binding ElementName=MetroWindow}"
+                        ToolTip="Settings">
+                    <Rectangle Width="20"
+                               Height="20"
+                               Fill="{Binding Path=Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}}">
+                        <Rectangle.OpacityMask>
+                            <VisualBrush Stretch="Fill" Visual="{DynamicResource appbar_settings}" />
+                        </Rectangle.OpacityMask>
+                    </Rectangle>
+                </Button>
             </StackPanel>
             <Grid Grid.Row="1"
                   Margin="0,5,0,0">

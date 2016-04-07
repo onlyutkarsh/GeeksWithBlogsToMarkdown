@@ -12,17 +12,15 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using GeeksWithBlogsToMarkdown.ViewModels;
-using MahApps.Metro.Controls;
 
-namespace GeeksWithBlogsToMarkdown
+namespace GeeksWithBlogsToMarkdown.UserControls
 {
     /// <summary>
-    /// Interaction logic for MainWindow.xaml
+    /// Interaction logic for Settings.xaml
     /// </summary>
-    public partial class MainWindow : MetroWindow
+    public partial class SettingsView : UserControl
     {
-        public MainWindow()
+        public SettingsView()
         {
             InitializeComponent();
         }
