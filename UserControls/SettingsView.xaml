@@ -19,6 +19,7 @@
             </Grid.ColumnDefinitions>
             <Label Grid.Column="0">GWB blog URL</Label>
             <TextBox Grid.Column="1"
+                     Text="{Binding GWBBlogUrl, ValidatesOnDataErrors=True, UpdateSourceTrigger=PropertyChanged, NotifyOnValidationError=True}"
                      Style="{DynamicResource MetroButtonTextBox}"
                      controls:TextBoxHelper.ClearTextButton="{Binding RelativeSource={RelativeSource Self}, Path=(controls:TextBoxHelper.HasText), Mode=OneWay}"
                      controls:TextBoxHelper.Watermark="Your full blog URL. Example: http://geekswithblogs.net/username/Default.aspx" />
@@ -31,6 +32,7 @@
             </Grid.ColumnDefinitions>
             <Label Grid.Column="0">GWB Username</Label>
             <TextBox Grid.Column="1"
+                     Text="{Binding GWBUserName, ValidatesOnDataErrors=True, UpdateSourceTrigger=PropertyChanged, NotifyOnValidationError=True}"
                      Style="{DynamicResource MetroButtonTextBox}"
                      controls:TextBoxHelper.ClearTextButton="{Binding RelativeSource={RelativeSource Self}, Path=(controls:TextBoxHelper.HasText), Mode=OneWay}"
                      controls:TextBoxHelper.Watermark="Enter the Geekswithblogs username" />
@@ -55,6 +57,7 @@
             </Grid.ColumnDefinitions>
             <Label Grid.Column="0">Output folder</Label>
             <TextBox Grid.Column="1"
+                     Text="{Binding OutputFolder, ValidatesOnDataErrors=True, UpdateSourceTrigger=PropertyChanged, NotifyOnValidationError=True}"
                      Style="{DynamicResource MetroButtonTextBox}"
                      controls:TextBoxHelper.ClearTextButton="{Binding RelativeSource={RelativeSource Self}, Path=(controls:TextBoxHelper.HasText), Mode=OneWay}" 
                      controls:TextBoxHelper.Watermark="Folder to save markdown files" />
@@ -69,7 +72,7 @@
                 <RowDefinition />
                 <RowDefinition />
             </Grid.RowDefinitions>
-            <Label Grid.Row="0">Optional Frontmatter to be inserted</Label>
+            <Label Grid.Row="0">Front matter to be inserted beginning of the markdown files</Label>
             <TextBox Grid.Row="1"
                      MaxLines="10"
                      TextWrapping="Wrap"
