@@ -45,6 +45,7 @@
             </Grid.ColumnDefinitions>
             <Label Grid.Column="0">GWB Password</Label>
             <PasswordBox Grid.Column="1"
+                         x:Name="GWBPasswordBox"
                          controls:TextBoxHelper.Watermark="Enter the Geekswithblogs password"
                          controls:TextBoxHelper.ClearTextButton="{Binding RelativeSource={RelativeSource Self}, Path=(controls:TextBoxHelper.HasText), Mode=OneWay}" />
         </Grid>
@@ -59,7 +60,7 @@
             <TextBox Grid.Column="1"
                      Text="{Binding OutputFolder, ValidatesOnDataErrors=True, UpdateSourceTrigger=PropertyChanged, NotifyOnValidationError=True}"
                      Style="{DynamicResource MetroButtonTextBox}"
-                     controls:TextBoxHelper.ClearTextButton="{Binding RelativeSource={RelativeSource Self}, Path=(controls:TextBoxHelper.HasText), Mode=OneWay}" 
+                     controls:TextBoxHelper.ClearTextButton="{Binding RelativeSource={RelativeSource Self}, Path=(controls:TextBoxHelper.HasText), Mode=OneWay}"
                      controls:TextBoxHelper.Watermark="Folder to save markdown files" />
             <Button Content="..."
                     Style="{DynamicResource SquareButtonStyle}"
@@ -78,6 +79,44 @@
                      TextWrapping="Wrap"
                      VerticalScrollBarVisibility="Visible"
                      AcceptsReturn="True" />
+        </Grid>
+        <Grid Margin="0,0,0,5">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <StackPanel Grid.Column="1"
+                        Orientation="Horizontal">
+                <Button Width="50"
+                        Height="50"
+                        Style="{DynamicResource MetroCircleButtonStyle}"
+                        Command="{Binding SaveCommand}"
+                        CommandParameter="{Binding ElementName=GWBPasswordBox}"
+                        ToolTip="Save">
+                    <Rectangle Width="20"
+                               Height="16"
+                               Fill="{Binding Path=Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}}">
+                        <Rectangle.OpacityMask>
+                            <VisualBrush Stretch="Fill"
+                                         Visual="{DynamicResource appbar_check}" />
+                        </Rectangle.OpacityMask>
+                    </Rectangle>
+                </Button>
+                <Button Width="50"
+                        Height="50"
+                        Style="{DynamicResource MetroCircleButtonStyle}"
+                        Command="{Binding CancelCommand}"
+                        ToolTip="Cancel">
+                    <Rectangle Width="16"
+                               Height="16"
+                               Fill="{Binding Path=Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}}">
+                        <Rectangle.OpacityMask>
+                            <VisualBrush Stretch="Fill"
+                                         Visual="{DynamicResource appbar_close}" />
+                        </Rectangle.OpacityMask>
+                    </Rectangle>
+                </Button>
+            </StackPanel>
         </Grid>
     </StackPanel>
 </UserControl>

@@ -1,38 +1,57 @@
-﻿using System.ComponentModel;
-using GeeksWithBlogsToMarkdown.Commands.Base;
+﻿using GeeksWithBlogsToMarkdown.Commands.Base;
 using GeeksWithBlogsToMarkdown.ViewModels.Base;
 using MahApps.Metro.Controls;
 using MahApps.Metro.Controls.Dialogs;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Linq;
+using System.Security;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
+using GeeksWithBlogsToMarkdown.Extensions;
 
 namespace GeeksWithBlogsToMarkdown.ViewModels
 {
     public class SettingsViewModel : ViewModelBase, IDataErrorInfo
     {
+        public Dictionary<string, string> Errors = new Dictionary<string, string>();
+        private ICommand _cancelCommand;
+        private string _frontMatter;
+        private string _gwbBlogUrl;
         private string _gwbPassword;
         private string _gwbUserName;
         private string _message;
+        private string _outputFolder;
 
-        public SettingsViewModel()
-        {
-            ShowMessageCommand = new DelegateCommand(OnShowMessage);
-            BrowseForOutputFolderCommand = new DelegateCommand(OnBrowseForOutputFolder);
-        }
+        private ICommand _saveCommand;
 
         public DelegateCommand BrowseForOutputFolderCommand { get; set; }
 
-        public string GWBPassword
+        public ICommand CancelCommand
         {
-            get { return _gwbPassword; }
+            get { return _cancelCommand; }
             set
             {
-                _gwbPassword = value;
+                _cancelCommand = value;
                 NotifyPropertyChanged();
             }
         }
 
-        private string _gwbBlogUrl;
+        public string Error
+        {
+            get { return string.Empty; }
+        }
+
+        public string FrontMatter
+        {
+            get { return _frontMatter; }
+            set
+            {
+                _frontMatter = value;
+                NotifyPropertyChanged();
+            }
+        }
 
         public string GWBBlogUrl
         {
@@ -40,6 +59,16 @@ namespace GeeksWithBlogsToMarkdown.ViewModels
             set
             {
                 _gwbBlogUrl = value;
+                NotifyPropertyChanged();
+            }
+        }
+
+        public string GWBPassword
+        {
+            get { return _gwbPassword; }
+            set
+            {
+                _gwbPassword = value;
                 NotifyPropertyChanged();
             }
         }
@@ -54,6 +83,8 @@ namespace GeeksWithBlogsToMarkdown.ViewModels
             }
         }
 
+        public bool IsValidating { get; set; }
+
         public string Message
         {
             get { return _message; }
@@ -63,40 +94,6 @@ namespace GeeksWithBlogsToMarkdown.ViewModels
                 NotifyPropertyChanged();
             }
         }
-
-        public ICommand ShowMessageCommand { get; set; }
-
-        private void OnBrowseForOutputFolder()
-        {
-        }
-
-        private void OnShowMessage()
-        {
-            var mainWindow = Application.Current.MainWindow as MetroWindow;
-            mainWindow?.ShowMessageAsync("GWB to Markdown", "Select the output folder");
-        }
-
-        public string this[string columnName]
-        {
-            get
-            {
-                if (columnName == "GWBBlogUrl" && string.IsNullOrWhiteSpace(GWBBlogUrl))
-                {
-                    return "Please specify your GWB blog URL!";
-                }
-                if (columnName == "GWBUserName" && string.IsNullOrWhiteSpace(GWBUserName))
-                {
-                    return "Username cannot be empty!";
-                }
-                if (columnName == "OutputFolder" && string.IsNullOrWhiteSpace(OutputFolder))
-                {
-                    return "Please set the output folder to save markdown files.";
-                }
-                return null;
-            }
-        }
-
-        private string _outputFolder;
 
         public string OutputFolder
         {
@@ -108,9 +105,133 @@ namespace GeeksWithBlogsToMarkdown.ViewModels
             }
         }
 
-        public string Error
+        public ICommand SaveCommand
         {
-            get { return string.Empty; }
+            get { return _saveCommand; }
+            set
+            {
+                _saveCommand = value;
+                NotifyPropertyChanged();
+            }
+        }
+
+        public ICommand ShowMessageCommand { get; set; }
+
+        public string this[string columnName]
+        {
+            get
+            {
+                if (!IsValidating) return null;
+
+                string result = string.Empty;
+                if (!IsValidating) return result;
+                Errors.Remove(columnName);
+
+                switch (columnName)
+                {
+                    case "GWBBlogUrl":
+                        {
+                            if (string.IsNullOrWhiteSpace(GWBBlogUrl))
+                            {
+                                result = "Please specify your GWB blog URL!";
+                            }
+                            break;
+                        }
+                    case "GWBUserName":
+                        {
+                            if (string.IsNullOrWhiteSpace(GWBUserName))
+                            {
+                                result = "Username cannot be empty!";
+                            }
+
+                            break;
+                        }
+                    case "OutputFolder":
+                        {
+                            if (string.IsNullOrWhiteSpace(OutputFolder))
+                            {
+                                result = "Output folder cannot be empty!";
+                            }
+
+                            break;
+                        }
+                }
+                if (result != string.Empty) Errors.Add(columnName, result);
+                return result;
+            }
+        }
+
+        public SettingsViewModel()
+        {
+            ShowMessageCommand = new DelegateCommand(OnShowMessage);
+            BrowseForOutputFolderCommand = new DelegateCommand(OnBrowseForOutputFolder);
+            SaveCommand = new DelegateCommand<PasswordBox>(OnSave);
+            CancelCommand = new DelegateCommand(OnCancel);
+
+            Settings.Instance.ReadSettings();
+            GWBUserName = Settings.Instance.GWBUserName;
+            GWBPassword = Settings.Instance.GWBPassword.DecryptString().ToInsecureString();
+            GWBBlogUrl = Settings.Instance.GWBBlogUrl;
+            FrontMatter = Settings.Instance.FrontMatter;
+
+        }
+
+        public bool IsValid()
+        {
+            IsValidating = true;
+            try
+            {
+                NotifyPropertyChanged("GWBBlogUrl");
+                NotifyPropertyChanged("GWBUserName");
+                NotifyPropertyChanged("OutputFolder");
+            }
+            finally
+            {
+                IsValidating = false;
+            }
+            return (!Errors.Any());
+        }
+
+        private void OnBrowseForOutputFolder()
+        {
+        }
+
+        private void OnCancel()
+        {
+            var metroWindow = Application.Current.MainWindow as MetroWindow;
+            if (metroWindow != null)
+            {
+                var settingsFlyout = metroWindow.Flyouts.Items[0] as Flyout;
+                if (settingsFlyout == null)
+                {
+                    return;
+                }
+                IsValidating = false;
+                NotifyPropertyChanged("GWBBlogUrl");
+                NotifyPropertyChanged("GWBUserName");
+                NotifyPropertyChanged("OutputFolder");
+                settingsFlyout.IsOpen = false;
+            }
+        }
+
+        private void OnSave(PasswordBox passwordBox)
+        {
+            if (IsValid())
+            {
+                //Save
+                Settings.Instance.GWBUserName = GWBUserName;
+                Settings.Instance.GWBPassword = passwordBox.Password.ToSecureString().EncryptString();
+                Settings.Instance.GWBBlogUrl = GWBBlogUrl;
+                Settings.Instance.FrontMatter = FrontMatter;
+
+                Settings.Instance.WriteOrUpdateSettings();
+            }
+        }
+
+        private void OnShowMessage()
+        {
+            var mainWindow = Application.Current.MainWindow as MetroWindow;
+            mainWindow?.ShowMessageAsync("GWB to Markdown", "Select the output folder");
         }
     }
 }

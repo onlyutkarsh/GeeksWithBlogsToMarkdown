@@ -25,6 +25,7 @@ namespace GeeksWithBlogsToMarkdown.ViewModels
             {
                 return;
             }
+            settingsFlyout.DataContext = new SettingsViewModel();
             settingsFlyout.IsOpen = true;
         }
     }
