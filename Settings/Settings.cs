@@ -12,7 +12,7 @@ namespace GeeksWithBlogsToMarkdown
 
         public string GWBPassword { get; set; }
 
-        public string OutputPath { get; set; }
+        public string OutputFolder { get; set; }
 
         public string FrontMatter { get; set; }
 

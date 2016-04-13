@@ -46,6 +46,9 @@
             <Label Grid.Column="0">GWB Password</Label>
             <PasswordBox Grid.Column="1"
                          x:Name="GWBPasswordBox"
+                         Style="{StaticResource MetroButtonRevealedPasswordBox}"
+                         controls:TextBoxHelper.IsWaitingForData="True"
+                         controls:TextBoxHelper.UseFloatingWatermark="True"
                          controls:TextBoxHelper.Watermark="Enter the Geekswithblogs password"
                          controls:TextBoxHelper.ClearTextButton="{Binding RelativeSource={RelativeSource Self}, Path=(controls:TextBoxHelper.HasText), Mode=OneWay}" />
         </Grid>
@@ -78,7 +81,8 @@
                      MaxLines="10"
                      TextWrapping="Wrap"
                      VerticalScrollBarVisibility="Visible"
-                     AcceptsReturn="True" />
+                     AcceptsReturn="True"
+                     Text="{Binding FrontMatter}" />
         </Grid>
         <Grid Margin="0,0,0,5">
             <Grid.ColumnDefinitions>

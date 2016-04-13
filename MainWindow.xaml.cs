@@ -14,6 +14,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using GeeksWithBlogsToMarkdown.ViewModels;
 using MahApps.Metro.Controls;
+using MahApps.Metro.Controls.Dialogs;
 
 namespace GeeksWithBlogsToMarkdown
 {
@@ -25,6 +26,8 @@ namespace GeeksWithBlogsToMarkdown
         public MainWindow()
         {
             InitializeComponent();
+            var viewModel = new MainWindowViewModel(DialogCoordinator.Instance);
+            DataContext = viewModel;
         }
     }
 }

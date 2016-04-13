@@ -8,6 +8,7 @@
     xmlns:local="clr-namespace:GeeksWithBlogsToMarkdown.ViewModels"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:userControls="clr-namespace:GeeksWithBlogsToMarkdown.UserControls"
+    xmlns:dialogs="clr-namespace:MahApps.Metro.Controls.Dialogs;assembly=MahApps.Metro"
     x:Name="MetroWindow"
     Title="Geekswithblogs to Markdown"
     MinWidth="725"
@@ -15,11 +16,12 @@
     BorderBrush="{DynamicResource AccentColorBrush}"
     BorderThickness="1"
     WindowStartupLocation="CenterScreen"
+    dialogs:DialogParticipation.Register="{Binding}"
     WindowState="Maximized"
     mc:Ignorable="d">
-    <controls:MetroWindow.DataContext>
+    <!--<controls:MetroWindow.DataContext>
         <local:MainVewModel />
-    </controls:MetroWindow.DataContext>
+    </controls:MetroWindow.DataContext>-->
     <controls:MetroWindow.RightWindowCommands>
         <controls:WindowCommands>
             <Button
@@ -61,7 +63,9 @@
                     Width="50"
                     Height="50"
                     Style="{DynamicResource MetroCircleButtonStyle}"
-                    ToolTip="Get posts from GWB">
+                    ToolTip="Get posts from GWB"
+                    CommandParameter="{Binding ElementName=MetroWindow}"
+                    Command="{Binding GetPostsCommand}">
                     <Rectangle
                         Width="20"
                         Height="20"

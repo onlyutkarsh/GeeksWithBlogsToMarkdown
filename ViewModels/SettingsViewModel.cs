@@ -10,6 +10,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using GeeksWithBlogsToMarkdown.Extensions;
+using Ookii.Dialogs.Wpf;
 
 namespace GeeksWithBlogsToMarkdown.ViewModels
 {
@@ -172,6 +173,7 @@ namespace GeeksWithBlogsToMarkdown.ViewModels
             GWBUserName = Settings.Instance.GWBUserName;
             GWBPassword = Settings.Instance.GWBPassword.DecryptString().ToInsecureString();
             GWBBlogUrl = Settings.Instance.GWBBlogUrl;
+            OutputFolder = Settings.Instance.OutputFolder;
             FrontMatter = Settings.Instance.FrontMatter;
 
         }
@@ -194,6 +196,22 @@ namespace GeeksWithBlogsToMarkdown.ViewModels
 
         private void OnBrowseForOutputFolder()
         {
+            VistaFolderBrowserDialog dialog = new VistaFolderBrowserDialog();
+            dialog.Description = "Please select a folder.";
+            dialog.UseDescriptionForTitle = true; // This applies to the Vista style dialog only, not the old dialog.
+            if (!VistaFolderBrowserDialog.IsVistaFolderDialogSupported)
+            {
+                //Show default browser dialog
+            }
+            else
+            {
+                var showDialog = dialog.ShowDialog();
+                if (showDialog != null && (bool)showDialog)
+                {
+                    OutputFolder = dialog.SelectedPath;
+                }
+            }
+            
         }
 
         private void OnCancel()
@@ -210,6 +228,7 @@ namespace GeeksWithBlogsToMarkdown.ViewModels
                 NotifyPropertyChanged("GWBBlogUrl");
                 NotifyPropertyChanged("GWBUserName");
                 NotifyPropertyChanged("OutputFolder");
+                NotifyPropertyChanged("FrontMatter");
                 settingsFlyout.IsOpen = false;
             }
         }
@@ -222,6 +241,7 @@ namespace GeeksWithBlogsToMarkdown.ViewModels
                 Settings.Instance.GWBUserName = GWBUserName;
                 Settings.Instance.GWBPassword = passwordBox.Password.ToSecureString().EncryptString();
                 Settings.Instance.GWBBlogUrl = GWBBlogUrl;
+                Settings.Instance.OutputFolder = OutputFolder;
                 Settings.Instance.FrontMatter = FrontMatter;
 
                 Settings.Instance.WriteOrUpdateSettings();
