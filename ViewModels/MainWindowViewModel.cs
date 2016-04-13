@@ -5,6 +5,7 @@ using GeeksWithBlogsToMarkdown.ViewModels.Base;
 using MahApps.Metro.Controls;
 using MahApps.Metro.Controls.Dialogs;
 using System.Windows.Input;
+using GeeksWithBlogsToMarkdown.Extensions;
 
 namespace GeeksWithBlogsToMarkdown.ViewModels
 {
@@ -55,17 +56,24 @@ namespace GeeksWithBlogsToMarkdown.ViewModels
             else if (result == null)
             {
                 //if everything okay in settings, continue
-                MessageDialogResult messageResult =
-                    await _dialogCoordinator.ShowMessageAsync(this, "Authentication Information",
-                        $"Username: {Settings.Instance.GWBUserName}, Password: {Settings.Instance.GWBPassword}");
+                userName = Settings.Instance.GWBUserName;
+                password = Settings.Instance.GWBPassword.DecryptString().ToInsecureString();
             }
             else
             {
+                userName = result.Username;
+                password = result.Password;
                 //user clicked connect in prompt
-                MessageDialogResult messageResult =
-                    await _dialogCoordinator.ShowMessageAsync(this, "Authentication Information",
-                        $"Username: {result.Username}, Password: {result.Password}, Remember:{result.ShouldRemember}");
+                if (result.ShouldRemember)
+                {
+                    Settings.Instance.GWBUserName = userName;
+                    Settings.Instance.GWBPassword = password.ToSecureString().EncryptString();
+                    Settings.Instance.WriteOrUpdateSettings();
+                }
             }
+
+            //Connect to GWB
+            await _dialogCoordinator.ShowMessageAsync(this, "Details", $"User:{userName}, Password:{password}");
         }
 
         private async Task<LoginDialogData> PromptForCredentials(MetroWindow metroWindow)
