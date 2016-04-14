@@ -1,4 +1,6 @@
+using System;
 using System.ComponentModel;
+using System.Linq.Expressions;
 using System.Runtime.CompilerServices;
 
 namespace GeeksWithBlogsToMarkdown.ViewModels.Base
@@ -9,6 +11,16 @@ namespace GeeksWithBlogsToMarkdown.ViewModels.Base
         {
             var deleg = PropertyChanged;
             deleg?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        protected void NotifyPropertyChanged<T>(Expression<Func<T>> propertyExpression)
+        {
+            var memberExpr = propertyExpression.Body as MemberExpression;
+            if (memberExpr == null)
+                throw new ArgumentException("propertyExpression should represent access to a member");
+            string memberName = memberExpr.Member.Name;
+            var deleg = PropertyChanged;
+            deleg?.Invoke(this, new PropertyChangedEventArgs(memberName));
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

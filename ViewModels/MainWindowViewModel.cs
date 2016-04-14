@@ -52,8 +52,10 @@ namespace GeeksWithBlogsToMarkdown.ViewModels
             if (result == null && !canConnect)
             {
                 //User pressed cancel
+                return;
             }
-            else if (result == null)
+
+            if (result == null)
             {
                 //if everything okay in settings, continue
                 userName = Settings.Instance.GWBUserName;

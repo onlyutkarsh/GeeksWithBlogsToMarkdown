@@ -81,6 +81,7 @@
     </ApplicationDefinition>
     <Compile Include="Commands\Base\AsyncDelegateCommand.cs" />
     <Compile Include="Commands\Base\DelegateCommand.cs" />
+    <Compile Include="Commands\Base\EventToCommand.cs" />
     <Compile Include="Commands\Base\IAsyncCommand.cs" />
     <Compile Include="Commands\Base\IRaiseCanExecuteChanged.cs" />
     <Compile Include="Converters\Base\BaseConverter.cs" />
