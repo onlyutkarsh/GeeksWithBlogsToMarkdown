@@ -35,16 +35,20 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="BlogML, Version=2.1.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>packages\blogml.2.2.0\lib\BlogML.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="ConfOxide, Version=1.4.2.0, Culture=neutral, PublicKeyToken=934faed64f82030e, processorArchitecture=MSIL">
       <HintPath>packages\ConfOxide.1.4.2.0\lib\net40\ConfOxide.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="CookComputing.XmlRpcV2">
+      <HintPath>_references\CookComputing.XmlRpcV2.dll</HintPath>
+    </Reference>
     <Reference Include="MahApps.Metro, Version=1.3.0.121, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>packages\MahApps.Metro.1.3.0-ALPHA121\lib\net45\MahApps.Metro.dll</HintPath>
       <Private>True</Private>
-    </Reference>
-    <Reference Include="NavigationPane">
-      <HintPath>_references\NavigationPane.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=8.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>packages\Newtonsoft.Json.8.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
@@ -87,7 +91,11 @@
     <Compile Include="Converters\Base\BaseConverter.cs" />
     <Compile Include="Converters\SettingFlyoutWidthConverter.cs" />
     <Compile Include="Extensions\EncryptionExtensions.cs" />
+    <Compile Include="Service\GWBService.cs" />
+    <Compile Include="Service\MetaWeblogApi.cs" />
     <Compile Include="Settings\Settings.cs" />
+    <Compile Include="TokenReplacement\FastReplacer.cs" />
+    <Compile Include="TokenReplacement\FastReplacerSnippet.cs" />
     <Compile Include="UserControls\SettingsView.xaml.cs">
       <DependentUpon>SettingsView.xaml</DependentUpon>
     </Compile>

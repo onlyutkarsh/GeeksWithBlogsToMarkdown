@@ -1,4 +1,5 @@
-﻿using GeeksWithBlogsToMarkdown.Commands.Base;
+﻿using System;
+using GeeksWithBlogsToMarkdown.Commands.Base;
 using GeeksWithBlogsToMarkdown.Extensions;
 using GeeksWithBlogsToMarkdown.ViewModels.Base;
 using MahApps.Metro.Controls;
@@ -133,10 +134,10 @@ namespace GeeksWithBlogsToMarkdown.ViewModels
                     return;
                 }
                 IsValidating = false;
-                NotifyPropertyChanged("GWBBlogUrl");
-                NotifyPropertyChanged("GWBUserName");
-                NotifyPropertyChanged("OutputFolder");
-                NotifyPropertyChanged("FrontMatter");
+                NotifyPropertyChanged(() => GWBBlogUrl);
+                NotifyPropertyChanged(() => GWBUserName);
+                NotifyPropertyChanged(() => OutputFolder);
+                NotifyPropertyChanged(() => FrontMatter);
                 settingsFlyout.IsOpen = false;
 
                 ShowPasswordChecked = false;
@@ -331,6 +332,28 @@ namespace GeeksWithBlogsToMarkdown.ViewModels
                             if (string.IsNullOrWhiteSpace(GWBBlogUrl))
                             {
                                 result = "Please specify your GWB blog URL!";
+                            }
+                            else
+                            {
+                                try
+                                {
+                                    var uri = new Uri(GWBBlogUrl);
+                                    if (!string.Equals(uri.Host, "www.geekswithblogs.net",
+                                        StringComparison.InvariantCultureIgnoreCase) && !string.Equals(uri.Host, "geekswithblogs.net",
+                                            StringComparison.InvariantCultureIgnoreCase))
+                                    {
+                                        result = "Host is not a geekswithblogs.net!";
+                                        break;
+                                    }
+                                    if (uri.Segments.Length != 3)
+                                    {
+                                        result = "Not a valid URL. Example of valid URL: http://www.geekswithblogs.net/username/default.aspx)";
+                                    }
+                                }
+                                catch (Exception e)
+                                {
+                                    result = $"{e.Message}. Example of valid URL: http://www.geekswithblogs.net/username/default.aspx)";
+                                }
                             }
                             break;
                         }
