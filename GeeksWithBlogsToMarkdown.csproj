@@ -91,6 +91,7 @@
     <Compile Include="Common\AppContext.cs" />
     <Compile Include="Converters\Base\BaseConverter.cs" />
     <Compile Include="Converters\DebuggingConverter.cs" />
+    <Compile Include="Converters\HtmlDecodeConverter.cs" />
     <Compile Include="Converters\SettingFlyoutWidthConverter.cs" />
     <Compile Include="Extensions\CommonExtensions.cs" />
     <Compile Include="Extensions\EncryptionExtensions.cs" />

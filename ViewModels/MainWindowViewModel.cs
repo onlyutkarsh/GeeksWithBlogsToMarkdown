@@ -18,6 +18,8 @@ namespace GeeksWithBlogsToMarkdown.ViewModels
         private IDialogCoordinator _dialogCoordinator;
         private ICommand _getPostsCommand;
         private ObservableCollection<BlogMLPost> _blogPosts;
+        private string _blogTitle;
+        private string _blogUrl;
 
         public ICommand GetPostsCommand
         {
@@ -92,10 +94,32 @@ namespace GeeksWithBlogsToMarkdown.ViewModels
             else
             {
                 var blog = response.Data;
+                BlogTitle = blog.Title.ToUpper();
+                BlogUrl = blog.RootUrl;
                 BlogPosts = blog.Posts.ToObservableCollection();
             }
 
             
+        }
+
+        public string BlogUrl
+        {
+            get { return _blogUrl; }
+            set
+            {
+                _blogUrl = value;
+                NotifyPropertyChanged();
+            }
+        }
+
+        public string BlogTitle
+        {
+            get { return _blogTitle; }
+            set
+            {
+                _blogTitle = value;
+                NotifyPropertyChanged();
+            }
         }
 
         public ObservableCollection<BlogMLPost> BlogPosts
