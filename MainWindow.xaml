@@ -39,9 +39,9 @@
                 IsModal="True"
                 Position="Right"
                 Theme="Adapt">
-                <!--<controls:Flyout.DataContext>
+                <controls:Flyout.DataContext>
                     <local:SettingsViewModel />
-                </controls:Flyout.DataContext>-->
+                </controls:Flyout.DataContext>
                 <userControls:SettingsView />
 
             </controls:Flyout>
@@ -146,13 +146,13 @@
                     <ListView
                         Margin="5"
                         BorderThickness="0"
-                        ItemsSource="{Binding Artists}"
+                        ItemsSource="{Binding BlogPosts}"
                         SelectedIndex="0">
                         <ListView.View>
                             <GridView>
                                 <GridViewColumn
                                     Width="200"
-                                    DisplayMemberBinding="{Binding Name}"
+                                    DisplayMemberBinding="{Binding Title}"
                                     Header="Title" />
                             </GridView>
                         </ListView.View>

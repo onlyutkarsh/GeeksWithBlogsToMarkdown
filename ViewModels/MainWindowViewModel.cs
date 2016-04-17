@@ -1,11 +1,15 @@
 using System;
+using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using GeeksWithBlogsToMarkdown.Commands.Base;
 using GeeksWithBlogsToMarkdown.ViewModels.Base;
 using MahApps.Metro.Controls;
 using MahApps.Metro.Controls.Dialogs;
 using System.Windows.Input;
+using BlogML.Xml;
+using GeeksWithBlogsToMarkdown.Common;
 using GeeksWithBlogsToMarkdown.Extensions;
+using GeeksWithBlogsToMarkdown.Service;
 
 namespace GeeksWithBlogsToMarkdown.ViewModels
 {
@@ -13,6 +17,7 @@ namespace GeeksWithBlogsToMarkdown.ViewModels
     {
         private IDialogCoordinator _dialogCoordinator;
         private ICommand _getPostsCommand;
+        private ObservableCollection<BlogMLPost> _blogPosts;
 
         public ICommand GetPostsCommand
         {
@@ -73,9 +78,34 @@ namespace GeeksWithBlogsToMarkdown.ViewModels
                     Settings.Instance.WriteOrUpdateSettings();
                 }
             }
-
+            ProgressDialogController progressController = await _dialogCoordinator.ShowProgressAsync(this, AppContext.Instance.ApplicationName, "Getting blog posts...");
+            progressController.SetIndeterminate();
             //Connect to GWB
-            await _dialogCoordinator.ShowMessageAsync(this, "Details", $"User:{userName}, Password:{password}");
+            var response = await GWBService.Instance.GetAllBlogPostsAsync(progressController);
+
+            await progressController.CloseAsync();
+
+            if (response.Exception != null)
+            {
+                await _dialogCoordinator.ShowMessageAsync(this, AppContext.Instance.ApplicationName, response.Exception.Message);
+            }
+            else
+            {
+                var blog = response.Data;
+                BlogPosts = blog.Posts.ToObservableCollection();
+            }
+
+            
+        }
+
+        public ObservableCollection<BlogMLPost> BlogPosts
+        {
+            get { return _blogPosts; }
+            set
+            {
+                _blogPosts = value;
+                NotifyPropertyChanged();
+            }
         }
 
         private async Task<LoginDialogData> PromptForCredentials(MetroWindow metroWindow)

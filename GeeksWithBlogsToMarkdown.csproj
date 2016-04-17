@@ -88,9 +88,13 @@
     <Compile Include="Commands\Base\EventToCommand.cs" />
     <Compile Include="Commands\Base\IAsyncCommand.cs" />
     <Compile Include="Commands\Base\IRaiseCanExecuteChanged.cs" />
+    <Compile Include="Common\AppContext.cs" />
     <Compile Include="Converters\Base\BaseConverter.cs" />
+    <Compile Include="Converters\DebuggingConverter.cs" />
     <Compile Include="Converters\SettingFlyoutWidthConverter.cs" />
+    <Compile Include="Extensions\CommonExtensions.cs" />
     <Compile Include="Extensions\EncryptionExtensions.cs" />
+    <Compile Include="Service\BlogResponse.cs" />
     <Compile Include="Service\GWBService.cs" />
     <Compile Include="Service\MetaWeblogApi.cs" />
     <Compile Include="Settings\Settings.cs" />
