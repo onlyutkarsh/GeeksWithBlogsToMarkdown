@@ -45,7 +45,7 @@ namespace GeeksWithBlogsToMarkdown.Service
             var blogs = _proxy.getUsersBlogs(_blogId, _userName, _password);
             var response = new BlogResponse<BlogMLBlog>();
 
-            await Task.Run(async () =>
+            await Task.Run(() =>
             {
                 try
                 {
@@ -96,7 +96,7 @@ namespace GeeksWithBlogsToMarkdown.Service
                 DateCreated = p.dateCreated,
                 DateModified = DateTime.Today,
                 ID = p.postid.ToString(),
-
+                PostUrl = p.permalink //$"http://www.geekswithblogs.net{p.link}",
             };
             if (p.categories != null && p.categories.Any())
             {

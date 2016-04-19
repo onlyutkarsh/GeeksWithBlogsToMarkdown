@@ -1,5 +1,6 @@
 using System;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Threading.Tasks;
 using GeeksWithBlogsToMarkdown.Commands.Base;
 using GeeksWithBlogsToMarkdown.ViewModels.Base;
@@ -20,6 +21,7 @@ namespace GeeksWithBlogsToMarkdown.ViewModels
         private ObservableCollection<BlogMLPost> _blogPosts;
         private string _blogTitle;
         private string _blogUrl;
+        private DelegateCommand<object> _selectionChangedCommand;
 
         public ICommand GetPostsCommand
         {
@@ -38,6 +40,22 @@ namespace GeeksWithBlogsToMarkdown.ViewModels
             _dialogCoordinator = dialogCoordinator;
             ShowSettingsCommand = new DelegateCommand<MetroWindow>(ShowSettings, (window) => true);
             GetPostsCommand = new DelegateCommand<MetroWindow>(OnGetPosts, (window) => true);
+            SelectionChangedCommand = new DelegateCommand<object>(OnSelectionChanged);
+        }
+
+        private void OnSelectionChanged(object o)
+        {
+            System.Collections.IList items = (System.Collections.IList)o;
+        }
+
+        public DelegateCommand<object> SelectionChangedCommand
+        {
+            get { return _selectionChangedCommand; }
+            set
+            {
+                _selectionChangedCommand = value;
+                NotifyPropertyChanged();
+            }
         }
 
         private async void OnGetPosts(MetroWindow metroWindow)
