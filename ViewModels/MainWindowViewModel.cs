@@ -11,6 +11,7 @@ using BlogML.Xml;
 using GeeksWithBlogsToMarkdown.Common;
 using GeeksWithBlogsToMarkdown.Extensions;
 using GeeksWithBlogsToMarkdown.Service;
+using Html2Markdown;
 
 namespace GeeksWithBlogsToMarkdown.ViewModels
 {
@@ -46,6 +47,39 @@ namespace GeeksWithBlogsToMarkdown.ViewModels
         private void OnSelectionChanged(object o)
         {
             System.Collections.IList items = (System.Collections.IList)o;
+            var post = items[0] as BlogMLPost;
+
+            if (post != null)
+            {
+                HtmlMarkup = post.Content.Text;
+
+                var converter = new Converter();
+                Markdown = converter.Convert(HtmlMarkup);
+            }
+        }
+
+
+        private string _markdown;
+
+        public string Markdown
+        {
+            get { return _markdown; }
+            set
+            {
+                _markdown = value;
+                NotifyPropertyChanged();
+            }
+        }
+        private string _htmlMarkup;
+
+        public string HtmlMarkup
+        {
+            get { return _htmlMarkup; }
+            set
+            {
+                _htmlMarkup = value;
+                NotifyPropertyChanged();
+            }
         }
 
         public DelegateCommand<object> SelectionChangedCommand

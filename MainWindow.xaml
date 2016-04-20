@@ -10,6 +10,7 @@
                       xmlns:dialogs="clr-namespace:MahApps.Metro.Controls.Dialogs;assembly=MahApps.Metro"
                       xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
                       xmlns:base="clr-namespace:GeeksWithBlogsToMarkdown.Commands.Base"
+                      xmlns:avalonedit="http://icsharpcode.net/sharpdevelop/avalonedit"
                       x:Name="MetroWindow"
                       Title="Geekswithblogs to Markdown"
                       MinWidth="725"
@@ -162,7 +163,7 @@
                         <i:Interaction.Triggers>
                             <i:EventTrigger EventName="SelectionChanged">
                                 <base:EventToCommand Command="{Binding SelectionChangedCommand}"
-                                                       CommandParameter="{Binding SelectedItems, ElementName=PostsListView}"></base:EventToCommand>
+                                                     CommandParameter="{Binding SelectedItems, ElementName=PostsListView}"></base:EventToCommand>
                             </i:EventTrigger>
                         </i:Interaction.Triggers>
                         <ListView.View>
@@ -185,16 +186,16 @@
                                 <ColumnDefinition Width="2*" />
                             </Grid.ColumnDefinitions>
                             <TextBox Grid.Column="0"
-                                     TextWrapping="Wrap">Left side</TextBox>
+                                     TextWrapping="Wrap" Text="{Binding HtmlMarkup}"></TextBox>
                             <GridSplitter Grid.Column="1"
                                           Width="5"
                                           HorizontalAlignment="Center"
                                           VerticalAlignment="Stretch" />
                             <TextBox Grid.Column="2"
-                                     TextWrapping="Wrap">Right side</TextBox>
+                                     TextWrapping="Wrap" Text="{Binding Markdown}"></TextBox>
                         </Grid>
                     </controls:MetroTabItem>
-                    <controls:MetroTabItem controls:ControlsHelper.HeaderFontSize="15"
+                    <!--<controls:MetroTabItem controls:ControlsHelper.HeaderFontSize="15"
                                            CloseButtonEnabled="True"
                                            Header="Post2">
                         <Grid>
@@ -205,6 +206,7 @@
                             </Grid.ColumnDefinitions>
                             <TextBox Grid.Column="0"
                                      TextWrapping="Wrap">Left side</TextBox>
+                            
                             <GridSplitter Grid.Column="1"
                                           Width="5"
                                           HorizontalAlignment="Center"
@@ -212,7 +214,7 @@
                             <TextBox Grid.Column="2"
                                      TextWrapping="Wrap">Right side</TextBox>
                         </Grid>
-                    </controls:MetroTabItem>
+                    </controls:MetroTabItem>-->
                 </controls:MetroTabControl>
             </Grid>
         </Grid>
