@@ -10,7 +10,6 @@
                       xmlns:dialogs="clr-namespace:MahApps.Metro.Controls.Dialogs;assembly=MahApps.Metro"
                       xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
                       xmlns:base="clr-namespace:GeeksWithBlogsToMarkdown.Commands.Base"
-                      xmlns:avalonedit="http://icsharpcode.net/sharpdevelop/avalonedit"
                       x:Name="MetroWindow"
                       Title="Geekswithblogs to Markdown"
                       MinWidth="725"
@@ -166,6 +165,23 @@
                                                      CommandParameter="{Binding SelectedItems, ElementName=PostsListView}"></base:EventToCommand>
                             </i:EventTrigger>
                         </i:Interaction.Triggers>
+                        <ListView.Style>
+                            <Style TargetType="{x:Type ListView}">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding Path=Items.Count, RelativeSource={RelativeSource Self}}"
+                                                 Value="0">
+                                        <Setter Property="Template">
+                                            <Setter.Value>
+                                                <ControlTemplate>
+                                                    <TextBlock HorizontalAlignment="Center"
+                                                               VerticalAlignment="Center" TextWrapping="Wrap">No items to display, Click "Get Posts" to begin</TextBlock>
+                                                </ControlTemplate>
+                                            </Setter.Value>
+                                        </Setter>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </ListView.Style>
                         <ListView.View>
                             <GridView>
                                 <GridViewColumn Width="200"
@@ -177,7 +193,7 @@
                 </Expander>
                 <controls:MetroTabControl Grid.Column="1">
                     <controls:MetroTabItem controls:ControlsHelper.HeaderFontSize="15"
-                                           CloseButtonEnabled="True"
+                                           CloseButtonEnabled="False"
                                            Header="Post">
                         <Grid>
                             <Grid.ColumnDefinitions>
@@ -186,13 +202,15 @@
                                 <ColumnDefinition Width="2*" />
                             </Grid.ColumnDefinitions>
                             <TextBox Grid.Column="0"
-                                     TextWrapping="Wrap" Text="{Binding HtmlMarkup}"></TextBox>
+                                     TextWrapping="Wrap"
+                                     Text="{Binding HtmlMarkup}"></TextBox>
                             <GridSplitter Grid.Column="1"
                                           Width="5"
                                           HorizontalAlignment="Center"
                                           VerticalAlignment="Stretch" />
                             <TextBox Grid.Column="2"
-                                     TextWrapping="Wrap" Text="{Binding Markdown}"></TextBox>
+                                     TextWrapping="Wrap"
+                                     Text="{Binding Markdown}"></TextBox>
                         </Grid>
                     </controls:MetroTabItem>
                     <!--<controls:MetroTabItem controls:ControlsHelper.HeaderFontSize="15"

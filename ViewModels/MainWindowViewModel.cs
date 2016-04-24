@@ -11,6 +11,7 @@ using BlogML.Xml;
 using GeeksWithBlogsToMarkdown.Common;
 using GeeksWithBlogsToMarkdown.Extensions;
 using GeeksWithBlogsToMarkdown.Service;
+using GeeksWithBlogsToMarkdown.TokenReplacement;
 using Html2Markdown;
 
 namespace GeeksWithBlogsToMarkdown.ViewModels
@@ -54,7 +55,22 @@ namespace GeeksWithBlogsToMarkdown.ViewModels
                 HtmlMarkup = post.Content.Text;
 
                 var converter = new Converter();
-                Markdown = converter.Convert(HtmlMarkup);
+                var markdown = converter.Convert(HtmlMarkup);
+                var frontMatter = Settings.Instance.FrontMatter;
+                var fr = new FastReplacer("<$", "$>");
+                fr.Append(frontMatter);
+                fr.Replace("<$GWB_TITLE$>", $"\"{System.Net.WebUtility.HtmlDecode(post.Title)}\"");
+                var description = post.HasExcerpt
+                    ? System.Net.WebUtility.HtmlDecode(post.Excerpt.Text)
+                    : System.Net.WebUtility.HtmlDecode(post.Title);
+                fr.Replace("<$GWB_DESCRIPTION$>", $"\"{description}\"");
+                fr.Replace("<$GWB_AUTHOR$>", "Utkarsh Shigihalli");
+
+                var categories = post.Categories.Cast<BlogMLCategoryReference>().Select(x => $"\"{x.Ref}\"");
+                
+                fr.Replace("<$GWB_CATEGORIES$>", $"{string.Join($"{Environment.NewLine}- ",categories)}");
+                fr.Replace("<$GWB_DATE$>", post.DateCreated.ToString("yyyy-MM-dd HH:mm:ss"));
+                Markdown = $"{fr}{Environment.NewLine}{markdown}";
             }
         }
 
