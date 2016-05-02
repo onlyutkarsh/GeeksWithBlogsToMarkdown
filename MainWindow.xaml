@@ -87,7 +87,8 @@
                     <Button Width="50"
                             Height="50"
                             Style="{DynamicResource MetroCircleButtonStyle}"
-                            ToolTip="Save">
+                            ToolTip="Save"
+                            Command="{Binding SavePostCommand}">
                         <Rectangle Width="20"
                                    Height="20"
                                    Fill="{Binding Path=Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}}">
@@ -100,7 +101,8 @@
                     <Button Width="50"
                             Height="50"
                             Style="{DynamicResource MetroCircleButtonStyle}"
-                            ToolTip="Save all">
+                            ToolTip="Save all"
+                            Command="{Binding SaveAllPostsCommand}">
                         <Rectangle Width="20"
                                    Height="20"
                                    Fill="{Binding Path=Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}}">
@@ -174,7 +176,8 @@
                                             <Setter.Value>
                                                 <ControlTemplate>
                                                     <TextBlock HorizontalAlignment="Center"
-                                                               VerticalAlignment="Center" TextWrapping="Wrap">No items to display, Click "Get Posts" to begin</TextBlock>
+                                                               VerticalAlignment="Center"
+                                                               TextWrapping="Wrap">No items to display, Click "Get Posts" to begin</TextBlock>
                                                 </ControlTemplate>
                                             </Setter.Value>
                                         </Setter>
@@ -203,6 +206,10 @@
                             </Grid.ColumnDefinitions>
                             <TextBox Grid.Column="0"
                                      TextWrapping="Wrap"
+                                     IsReadOnly="True"
+                                     Background="{DynamicResource GrayBrush8}"
+                                     ScrollViewer.HorizontalScrollBarVisibility="Auto"
+                                     ScrollViewer.VerticalScrollBarVisibility="Auto"
                                      Text="{Binding HtmlMarkup}"></TextBox>
                             <GridSplitter Grid.Column="1"
                                           Width="5"
@@ -210,7 +217,11 @@
                                           VerticalAlignment="Stretch" />
                             <TextBox Grid.Column="2"
                                      TextWrapping="Wrap"
-                                     Text="{Binding Markdown}"></TextBox>
+                                     Text="{Binding Markdown}"
+                                     ScrollViewer.HorizontalScrollBarVisibility="Auto"
+                                     ScrollViewer.VerticalScrollBarVisibility="Auto"
+                                     IsReadOnly="True"
+                                     Background="{DynamicResource GrayBrush8}"></TextBox>
                         </Grid>
                     </controls:MetroTabItem>
                     <!--<controls:MetroTabItem controls:ControlsHelper.HeaderFontSize="15"

@@ -56,7 +56,6 @@ namespace GeeksWithBlogsToMarkdown.Service
                             Title = blog.blogName,
                             RootUrl = blog.url
                         };
-                        progressController.SetTitle(xblog.Title);
                         progressController.SetMessage("Getting categories");
                         var categories = GetCategories(blog);
                         var blogMlCategories = categories as IList<BlogMLCategory> ?? categories.ToList();

@@ -4,7 +4,7 @@ using ConfOxide;
 
 namespace GeeksWithBlogsToMarkdown
 {
-    sealed class Settings : SettingsBase<Settings>
+    public sealed class Settings : SettingsBase<Settings>
     {
         public string GWBBlogUrl { get; set; }
 
@@ -14,11 +14,15 @@ namespace GeeksWithBlogsToMarkdown
 
         public string OutputFolder { get; set; }
 
+        public string ImagesFolder { get; set; }
+
         public string FrontMatter { get; set; }
 
         private static readonly Lazy<Settings> lazy = new Lazy<Settings>(() => new Settings());
 
         public static Settings Instance { get { return lazy.Value; } }
+        public string CustomImagesFolder { get; set; }
+
 
         private Settings()
         {

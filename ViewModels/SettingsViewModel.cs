@@ -13,6 +13,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
+using GeeksWithBlogsToMarkdown.Common;
 
 namespace GeeksWithBlogsToMarkdown.ViewModels
 {
@@ -32,6 +33,7 @@ namespace GeeksWithBlogsToMarkdown.ViewModels
         private ICommand _showPasswordCommand;
 
         private bool _showPasswordChecked;
+        private string _imagesFolder;
 
         public bool ShowPasswordChecked
         {
@@ -47,10 +49,13 @@ namespace GeeksWithBlogsToMarkdown.ViewModels
         {
             ShowMessageCommand = new DelegateCommand(OnShowMessage);
             BrowseForOutputFolderCommand = new DelegateCommand(OnBrowseForOutputFolder);
+            BrowseForImagesFolderCommand = new DelegateCommand(OnBrowseForImagesFolder);
             SaveCommand = new DelegateCommand(OnSave);
             CancelCommand = new DelegateCommand(OnCancel);
             ShowPasswordCommand = new DelegateCommand<ToggleButton>(OnShowPassword);
             EditPasswordCommand = new DelegateCommand<ToggleButton>(OnEditPassword);
+
+            CustomImagesFolderCommand = new DelegateCommand<string>(OnCustomImageFolder);
 
             ShowPasswordChecked = false;
 
@@ -58,8 +63,28 @@ namespace GeeksWithBlogsToMarkdown.ViewModels
             GWBUserName = Settings.Instance.GWBUserName;
             GWBBlogUrl = Settings.Instance.GWBBlogUrl;
             OutputFolder = Settings.Instance.OutputFolder;
+            ImagesFolder = Settings.Instance.ImagesFolder;
+            CustomImagesFolder = Settings.Instance.CustomImagesFolder;
             FrontMatter = Settings.Instance.FrontMatter;
         }
+
+        public string CustomImagesFolder
+        {
+            get { return _customImagesFolder; }
+            set
+            {
+                _customImagesFolder = value;
+                NotifyPropertyChanged();
+            }
+        }
+
+        private void OnCustomImageFolder(string text)
+        {
+            var window = Application.Current.MainWindow as MetroWindow;
+            window?.ShowMessageAsync(AppContext.Instance.ApplicationName, "Overwrite the images path if you are publishing generated markdown files for blog");
+        }
+
+        public DelegateCommand BrowseForImagesFolderCommand { get; set; }
 
         private async void OnEditPassword(ToggleButton showPasswordButton)
         {
@@ -95,6 +120,7 @@ namespace GeeksWithBlogsToMarkdown.ViewModels
                 NotifyPropertyChanged(() => GWBBlogUrl);
                 NotifyPropertyChanged(() => GWBUserName);
                 NotifyPropertyChanged(() => OutputFolder);
+                NotifyPropertyChanged(() => ImagesFolder);
             }
             finally
             {
@@ -106,7 +132,7 @@ namespace GeeksWithBlogsToMarkdown.ViewModels
         private void OnBrowseForOutputFolder()
         {
             VistaFolderBrowserDialog dialog = new VistaFolderBrowserDialog();
-            dialog.Description = "Please select a folder.";
+            dialog.Description = @"Please select a folder to save posts...";
             dialog.UseDescriptionForTitle = true; // This applies to the Vista style dialog only, not the old dialog.
             if (!VistaFolderBrowserDialog.IsVistaFolderDialogSupported)
             {
@@ -118,6 +144,38 @@ namespace GeeksWithBlogsToMarkdown.ViewModels
                 if (showDialog != null && (bool)showDialog)
                 {
                     OutputFolder = dialog.SelectedPath;
+                }
+            }
+        }
+
+        private ICommand _customImagesFolderCommand;
+        private string _customImagesFolder;
+
+        public ICommand CustomImagesFolderCommand
+        {
+            get { return _customImagesFolderCommand; }
+            set
+            {
+                _customImagesFolderCommand = value;
+                NotifyPropertyChanged();
+            }
+        }
+
+        private void OnBrowseForImagesFolder()
+        {
+            VistaFolderBrowserDialog dialog = new VistaFolderBrowserDialog();
+            dialog.Description = @"Please select a folder to save images...";
+            dialog.UseDescriptionForTitle = true; // This applies to the Vista style dialog only, not the old dialog.
+            if (!VistaFolderBrowserDialog.IsVistaFolderDialogSupported)
+            {
+                //Show default browser dialog
+            }
+            else
+            {
+                var showDialog = dialog.ShowDialog();
+                if (showDialog != null && (bool)showDialog)
+                {
+                    ImagesFolder = dialog.SelectedPath;
                 }
             }
         }
@@ -137,6 +195,7 @@ namespace GeeksWithBlogsToMarkdown.ViewModels
                 NotifyPropertyChanged(() => GWBBlogUrl);
                 NotifyPropertyChanged(() => GWBUserName);
                 NotifyPropertyChanged(() => OutputFolder);
+                NotifyPropertyChanged(() => ImagesFolder);
                 NotifyPropertyChanged(() => FrontMatter);
                 settingsFlyout.IsOpen = false;
 
@@ -151,9 +210,11 @@ namespace GeeksWithBlogsToMarkdown.ViewModels
                 //Save
                 Settings.Instance.GWBUserName = GWBUserName;
                 //No need to save the password as password will always be stored using Edit dialog
-                Settings.Instance.GWBBlogUrl = GWBBlogUrl;
+                Settings.Instance.GWBBlogUrl = GWBBlogUrl.ToLower();
                 Settings.Instance.OutputFolder = OutputFolder;
+                Settings.Instance.ImagesFolder = ImagesFolder;
                 Settings.Instance.FrontMatter = FrontMatter;
+                Settings.Instance.CustomImagesFolder = CustomImagesFolder;
 
                 Settings.Instance.WriteOrUpdateSettings();
 
@@ -293,6 +354,16 @@ namespace GeeksWithBlogsToMarkdown.ViewModels
             }
         }
 
+        public string ImagesFolder
+        {
+            get { return _imagesFolder; }
+            set
+            {
+                _imagesFolder = value;
+                NotifyPropertyChanged();
+            }
+        }
+
         public ICommand SaveCommand
         {
             get { return _saveCommand; }
@@ -345,7 +416,7 @@ namespace GeeksWithBlogsToMarkdown.ViewModels
                                         result = "Host is not a geekswithblogs.net!";
                                         break;
                                     }
-                                    if (uri.Segments.Length != 3)
+                                    if (uri.Segments.Length <= 2)
                                     {
                                         result = "Not a valid URL. Example of valid URL: http://www.geekswithblogs.net/username/default.aspx)";
                                     }
@@ -371,6 +442,15 @@ namespace GeeksWithBlogsToMarkdown.ViewModels
                             if (string.IsNullOrWhiteSpace(OutputFolder))
                             {
                                 result = "Output folder cannot be empty!";
+                            }
+
+                            break;
+                        }
+                    case "ImagesFolder":
+                        {
+                            if (string.IsNullOrWhiteSpace(ImagesFolder))
+                            {
+                                result = "Please specify the folder to save images!";
                             }
 
                             break;
