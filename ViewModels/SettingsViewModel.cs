@@ -209,7 +209,7 @@ namespace GeeksWithBlogsToMarkdown.ViewModels
             {
                 //Save
                 Settings.Instance.GWBUserName = GWBUserName;
-                //No need to save the password as password will always be stored using Edit dialog
+                Settings.Instance.GWBPassword = GWBPassword.ToSecureString().EncryptString();
                 Settings.Instance.GWBBlogUrl = GWBBlogUrl.ToLower();
                 Settings.Instance.OutputFolder = OutputFolder;
                 Settings.Instance.ImagesFolder = ImagesFolder;
