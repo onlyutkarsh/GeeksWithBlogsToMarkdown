@@ -36,6 +36,9 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject>GeeksWithBlogsToMarkdown.App</StartupObject>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="BlogML, Version=2.1.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>packages\blogml.2.2.0\lib\BlogML.dll</HintPath>
@@ -176,6 +179,7 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="Resources\appicon.png" />
     <Content Include="Resources\documents.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

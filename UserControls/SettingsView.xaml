@@ -49,7 +49,6 @@
             <Label Grid.Column="0">GWB Password</Label>
             <TextBox Grid.Column="1"
                      controls:TextBoxHelper.Watermark="******************"
-                     IsEnabled="False"
                      Text="{Binding GWBPassword}" />
             <StackPanel Grid.Column="2"
                         Orientation="Horizontal">
@@ -77,22 +76,7 @@
                         </i:EventTrigger>
                     </i:Interaction.Triggers>
                 </ToggleButton>
-                <Button Width="50"
-                        Command="{Binding EditPasswordCommand}"
-                        CommandParameter="{Binding ElementName=ShowPasswordButton}"
-                        ToolTip="Edit account information"
-                        Margin="5,0,0,0">
-                    <Button.Content>
-                        <Rectangle Width="16"
-                                   Height="16"
-                                   Fill="{Binding Path=Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}}">
-                            <Rectangle.OpacityMask>
-                                <VisualBrush Stretch="Fill"
-                                             Visual="{DynamicResource appbar_edit}" />
-                            </Rectangle.OpacityMask>
-                        </Rectangle>
-                    </Button.Content>
-                </Button>
+               
             </StackPanel>
         </Grid>
         <Grid Margin="0,0,0,5">

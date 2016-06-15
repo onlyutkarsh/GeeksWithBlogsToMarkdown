@@ -34,17 +34,37 @@ namespace GeeksWithBlogsToMarkdown.ViewModels
         private ICommand _saveAllPostsCommand;
         private ICommand _savePostCommand;
         private DelegateCommand<object> _selectionChangedCommand;
+        private DelegateCommand _browseInGwbCommand;
 
         public MainWindowViewModel(IDialogCoordinator dialogCoordinator)
         {
             _dialogCoordinator = dialogCoordinator;
-            ShowSettingsCommand = new DelegateCommand<MetroWindow>(ShowSettings, (window) => true);
+            ShowSettingsCommand = new DelegateCommand<MetroWindow>(OnShowSettings, (window) => true);
             GetPostsCommand = new DelegateCommand<MetroWindow>(OnGetPosts, (window) => true);
             SelectionChangedCommand = new DelegateCommand<object>(OnSelectionChanged);
-            SaveAllPostsCommand = new DelegateCommand(OnSaveAllPosts, ()=> BlogPosts != null && BlogPosts.Count > 0);
+            SaveAllPostsCommand = new DelegateCommand(OnSaveAllPosts, () => BlogPosts != null && BlogPosts.Count > 0);
             SavePostCommand = new DelegateCommand(OnSavePost, () => SelectedPost != null);
+            BrowseInGWBCommand = new DelegateCommand(OnBrowseInGWB, () => SelectedPost != null);
 
             Settings.Instance.ReadSettings();
+        }
+
+        public DelegateCommand BrowseInGWBCommand
+        {
+            get { return _browseInGwbCommand; }
+            set
+            {
+                _browseInGwbCommand = value; 
+                NotifyPropertyChanged();
+            }
+        }
+
+        private void OnBrowseInGWB()
+        {
+            var post = SelectedPost;
+
+            Process.Start(post.PostUrl);
+
         }
 
         public string GetSuggestedFilenameFromTitle(BlogMLPost post)
@@ -83,43 +103,22 @@ namespace GeeksWithBlogsToMarkdown.ViewModels
 
         private async void OnGetPosts(MetroWindow metroWindow)
         {
-            LoginDialogData result = null;
-            bool canConnect = true;
-            var userName = string.Empty;
-            var password = string.Empty;
-            //check if username and password already available
 
-            if (string.IsNullOrWhiteSpace(Settings.Instance.GWBUserName))
+            if (string.IsNullOrWhiteSpace(Settings.Instance.GWBBlogUrl) ||
+                (string.IsNullOrWhiteSpace(Settings.Instance.GWBUserName) &&
+                string.IsNullOrWhiteSpace(Settings.Instance.GWBPassword)))
             {
-                //prompt is username is empty
-                result = await PromptForCredentials(metroWindow);
-                canConnect = result != null;
-            }
 
-            if (result == null && !canConnect)
-            {
-                //User pressed cancel
+                var settingsFlyout = metroWindow.Flyouts.Items[0] as Flyout;
+                if (settingsFlyout == null)
+                {
+                    return;
+                }
+                settingsFlyout.DataContext = new SettingsViewModel();
+                settingsFlyout.IsOpen = true;
                 return;
             }
-
-            if (result == null)
-            {
-                //if everything okay in settings, continue
-                userName = Settings.Instance.GWBUserName;
-                password = Settings.Instance.GWBPassword.DecryptString().ToInsecureString();
-            }
-            else
-            {
-                userName = result.Username;
-                password = result.Password;
-                //user clicked connect in prompt
-                if (result.ShouldRemember)
-                {
-                    Settings.Instance.GWBUserName = userName;
-                    Settings.Instance.GWBPassword = password.ToSecureString().EncryptString();
-                    Settings.Instance.WriteOrUpdateSettings();
-                }
-            }
+           
             ProgressDialogController progressController = await _dialogCoordinator.ShowProgressAsync(this, AppContext.Instance.ApplicationName, "Getting blog posts...");
             progressController.SetIndeterminate();
             //Connect to GWB
@@ -145,7 +144,7 @@ namespace GeeksWithBlogsToMarkdown.ViewModels
             var posts = BlogPosts;
             ProgressDialogController progressController = await _dialogCoordinator.ShowProgressAsync(this, AppContext.Instance.ApplicationName, "Generating markdown...");
             progressController.SetIndeterminate();
-          
+
             await posts.ForEachAsync(async post =>
             {
                 await SavePost(post, false, progressController);
@@ -280,7 +279,7 @@ namespace GeeksWithBlogsToMarkdown.ViewModels
             }
         }
 
-        private void ShowSettings(MetroWindow metroWindow)
+        private void OnShowSettings(MetroWindow metroWindow)
         {
             var settingsFlyout = metroWindow.Flyouts.Items[0] as Flyout;
             if (settingsFlyout == null)

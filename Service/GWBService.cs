@@ -42,13 +42,14 @@ namespace GeeksWithBlogsToMarkdown.Service
 
         public async Task<BlogResponse<BlogMLBlog>> GetAllBlogPostsAsync(ProgressDialogController progressController)
         {
-            var blogs = _proxy.getUsersBlogs(_blogId, _userName, _password);
             var response = new BlogResponse<BlogMLBlog>();
-
-            await Task.Run(() =>
+            try
             {
-                try
+                var blogs = _proxy.getUsersBlogs(_blogId, _userName, _password);
+
+                await Task.Run(() =>
                 {
+
                     foreach (BlogInfo blog in blogs)
                     {
                         BlogMLBlog xblog = new BlogMLBlog
@@ -65,12 +66,13 @@ namespace GeeksWithBlogsToMarkdown.Service
                         xblog.Posts.AddRange(posts);
                         response.Data = xblog;
                     }
-                }
-                catch (Exception exception)
-                {
-                    response.Exception = exception;
-                }
-            });
+
+                });
+            }
+            catch (Exception exception)
+            {
+                response.Exception = exception;
+            }
             return response;
         }
 
