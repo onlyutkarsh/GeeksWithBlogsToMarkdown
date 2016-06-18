@@ -1,5 +1,7 @@
 # GeeksWithBlogs To Markdown #
 
+![Build Status](https://onlyutkarsh.visualstudio.com/_apis/public/build/definitions/4d9873cc-8ec6-42a8-a11c-343ec3e05af1/17/badge)
+
 Do you host your blog posts in [GeeksWithBlogs.net](http://www.geekswithblogs.net) (GWB)? Well you probably know then that, GWB does not provide any means to download/backup your posts. This is big problem if if you want to move to another hosting provider like GitHub/Wordpress and you cannot download any your existing posts. Fortunately, GWB posts are in MetaWebBlog format and with some simple C# code you can backup your blog posts. 
 
 I host my blog at [http://www.visualstudiogeeks.com](http://www.visualstudiogeeks.com) using Jekyll engine and wanted a quick way to convert all my posts in the markdown format. This utility provides a quick way to fetch your posts from GWB and save them as markdown.
