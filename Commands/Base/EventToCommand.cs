@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Interactivity;
@@ -18,17 +14,6 @@ namespace GeeksWithBlogsToMarkdown.Commands.Base
     /// </summary>
     public class EventToCommand : TriggerAction<FrameworkElement>, ICommandSource
     {
-
-
-        /// <summary>
-        /// EventArgs
-        /// </summary>
-        public static readonly DependencyProperty EventArgsProperty = DependencyProperty.Register(
-            "EventArgs",
-            typeof(object),
-            typeof(EventToCommand));
-
-
         /// <summary>
         /// Identifies the <see cref="CommandParameter" /> dependency property
         /// </summary>
@@ -64,6 +49,14 @@ namespace GeeksWithBlogsToMarkdown.Commands.Base
             new PropertyMetadata(
                 null,
                 (s, e) => OnCommandChanged(s as EventToCommand, e)));
+
+        /// <summary>
+        /// EventArgs
+        /// </summary>
+        public static readonly DependencyProperty EventArgsProperty = DependencyProperty.Register(
+            "EventArgs",
+            typeof(object),
+            typeof(EventToCommand));
 
         /// <summary>
         /// Identifies the <see cref="MustToggleIsEnabled" /> dependency property
@@ -108,25 +101,6 @@ namespace GeeksWithBlogsToMarkdown.Commands.Base
         }
 
         /// <summary>
-        /// Allows access to event args in binding
-        /// <example>
-        /// CommandParameter="{Binding EventArgs, RelativeSource={RelativeSource Self}}"
-        /// </example>
-        /// </summary>
-        public object EventArgs
-        {
-            get
-            {
-                return GetValue(EventArgsProperty);
-            }
-
-            set
-            {
-                SetValue(EventArgsProperty, value);
-            }
-        }
-
-        /// <summary>
         /// Gets or sets an object that will be passed to the <see cref="Command" />
         /// attached to this trigger. This is a DependencyProperty.
         /// </summary>
@@ -148,11 +122,29 @@ namespace GeeksWithBlogsToMarkdown.Commands.Base
             get { return this.AssociatedObject; }
         }
 
+        /// <summary>
+        /// Allows access to event args in binding
+        /// <example>
+        /// CommandParameter="{Binding EventArgs, RelativeSource={RelativeSource Self}}"
+        /// </example>
+        /// </summary>
+        public object EventArgs
+        {
+            get
+            {
+                return GetValue(EventArgsProperty);
+            }
+
+            set
+            {
+                SetValue(EventArgsProperty, value);
+            }
+        }
 
         /// <summary>
         /// Gets or sets a value indicating whether the attached element must be
         /// disabled when the <see cref="Command" /> property's CanExecuteChanged
-        /// event fires. If this property is true, and the command's CanExecute 
+        /// event fires. If this property is true, and the command's CanExecute
         /// method returns false, the element will be disabled. If this property
         /// is false, the element will not be disabled when the command's
         /// CanExecute method changes. This is a DependencyProperty.
@@ -170,16 +162,29 @@ namespace GeeksWithBlogsToMarkdown.Commands.Base
             }
         }
 
-
-        /// <summary>
-        /// Called when this trigger is attached to a FrameworkElement.
-        /// </summary>
-        protected override void OnAttached()
+        public bool CanExecute()
         {
-            base.OnAttached();
-            EnableDisableElement();
+            if (Command == null)
+                return false;
+
+            var routedCommand = Command as RoutedCommand;
+            if (routedCommand != null)
+                return routedCommand.CanExecute(CommandParameter, CommandTarget);
+
+            return Command.CanExecute(CommandParameter);
         }
 
+        public void Execute()
+        {
+            if (Command == null)
+                return;
+
+            var routedCommand = Command as RoutedCommand;
+            if (routedCommand != null)
+                routedCommand.Execute(CommandParameter, CommandTarget);
+            else
+                Command.Execute(CommandParameter);
+        }
 
         /// <summary>
         /// Provides a simple way to invoke this trigger programatically
@@ -198,7 +203,6 @@ namespace GeeksWithBlogsToMarkdown.Commands.Base
         /// <param name="parameter">The EventArgs of the fired event.</param>
         protected override void Invoke(object parameter)
         {
-
             EventArgs = parameter;
 
             if (AssociatedElementIsDisabled())
@@ -208,6 +212,15 @@ namespace GeeksWithBlogsToMarkdown.Commands.Base
 
             if (CanExecute())
                 Execute();
+        }
+
+        /// <summary>
+        /// Called when this trigger is attached to a FrameworkElement.
+        /// </summary>
+        protected override void OnAttached()
+        {
+            base.OnAttached();
+            EnableDisableElement();
         }
 
         private static void OnCommandChanged(
@@ -236,18 +249,15 @@ namespace GeeksWithBlogsToMarkdown.Commands.Base
 
         private bool AssociatedElementIsDisabled()
         {
-
             return AssociatedObject != null && !AssociatedObject.IsEnabled;
         }
 
         private void EnableDisableElement()
         {
-
             if (AssociatedObject == null)
             {
                 return;
             }
-
 
             if (MustToggleIsEnabled && Command != null)
             {
@@ -258,30 +268,6 @@ namespace GeeksWithBlogsToMarkdown.Commands.Base
         private void OnCommandCanExecuteChanged(object sender, EventArgs e)
         {
             EnableDisableElement();
-        }
-
-        public void Execute()
-        {
-            if (Command == null)
-                return;
-
-            var routedCommand = Command as RoutedCommand;
-            if (routedCommand != null)
-                routedCommand.Execute(CommandParameter, CommandTarget);
-            else
-                Command.Execute(CommandParameter);
-        }
-
-        public bool CanExecute()
-        {
-            if (Command == null)
-                return false;
-
-            var routedCommand = Command as RoutedCommand;
-            if (routedCommand != null)
-                return routedCommand.CanExecute(CommandParameter, CommandTarget);
-
-            return Command.CanExecute(CommandParameter);
         }
     }
 }

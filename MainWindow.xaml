@@ -42,9 +42,7 @@
                     <local:SettingsViewModel />
                 </controls:Flyout.DataContext>
                 <userControls:SettingsView />
-
             </controls:Flyout>
-
         </controls:FlyoutsControl>
     </controls:MetroWindow.Flyouts>
     <controls:MetroContentControl>
@@ -58,7 +56,8 @@
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
-                <StackPanel Grid.Column="0" Orientation="Vertical">
+                <StackPanel Grid.Column="0"
+                            Orientation="Vertical">
                     <TextBlock FontSize="24"
                                FontWeight="Bold"
                                Foreground="{DynamicResource AccentColorBrush}"
@@ -80,7 +79,8 @@
                                                   RelativeSource={RelativeSource FindAncestor,
                                                                                  AncestorType={x:Type Button}}}">
                             <Rectangle.OpacityMask>
-                                <VisualBrush Stretch="Fill" Visual="{DynamicResource material_download}" />
+                                <VisualBrush Stretch="Fill"
+                                             Visual="{DynamicResource material_download}" />
                             </Rectangle.OpacityMask>
                         </Rectangle>
                     </Button>
@@ -95,7 +95,8 @@
                                                   RelativeSource={RelativeSource FindAncestor,
                                                                                  AncestorType={x:Type Button}}}">
                             <Rectangle.OpacityMask>
-                                <VisualBrush Stretch="Fill" Visual="{DynamicResource material_save}" />
+                                <VisualBrush Stretch="Fill"
+                                             Visual="{DynamicResource material_save}" />
                             </Rectangle.OpacityMask>
                         </Rectangle>
                     </Button>
@@ -110,7 +111,8 @@
                                                   RelativeSource={RelativeSource FindAncestor,
                                                                                  AncestorType={x:Type Button}}}">
                             <Rectangle.OpacityMask>
-                                <VisualBrush Stretch="Fill" Visual="{DynamicResource material_save_all}" />
+                                <VisualBrush Stretch="Fill"
+                                             Visual="{DynamicResource material_save_all}" />
                             </Rectangle.OpacityMask>
                         </Rectangle>
                     </Button>
@@ -126,17 +128,20 @@
                                                   RelativeSource={RelativeSource FindAncestor,
                                                                                  AncestorType={x:Type Button}}}">
                             <Rectangle.OpacityMask>
-                                <VisualBrush Stretch="Fill" Visual="{DynamicResource appbar_settings}" />
+                                <VisualBrush Stretch="Fill"
+                                             Visual="{DynamicResource appbar_settings}" />
                             </Rectangle.OpacityMask>
                         </Rectangle>
                     </Button>
                 </StackPanel>
             </Grid>
 
-            <Grid Grid.Row="1" Margin="0,5,0,0">
+            <Grid Grid.Row="1"
+                  Margin="0,5,0,0">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto" />
-                    <ColumnDefinition Width="*" MinWidth="80" />
+                    <ColumnDefinition Width="*"
+                                      MinWidth="80" />
                 </Grid.ColumnDefinitions>
                 <Expander Grid.Column="0"
                           HorizontalAlignment="Left"
@@ -164,13 +169,15 @@
                               SelectionMode="Single">
                         <i:Interaction.Triggers>
                             <i:EventTrigger EventName="SelectionChanged">
-                                <base:EventToCommand Command="{Binding SelectionChangedCommand}" CommandParameter="{Binding SelectedItems, ElementName=PostsListView}" />
+                                <base:EventToCommand Command="{Binding SelectionChangedCommand}"
+                                                     CommandParameter="{Binding SelectedItems, ElementName=PostsListView}" />
                             </i:EventTrigger>
                         </i:Interaction.Triggers>
                         <ListView.Style>
                             <Style TargetType="{x:Type ListView}">
                                 <Style.Triggers>
-                                    <DataTrigger Binding="{Binding Path=Items.Count, RelativeSource={RelativeSource Self}}" Value="0">
+                                    <DataTrigger Binding="{Binding Path=Items.Count, RelativeSource={RelativeSource Self}}"
+                                                 Value="0">
                                         <Setter Property="Template">
                                             <Setter.Value>
                                                 <ControlTemplate>
@@ -188,21 +195,24 @@
                         </ListView.Style>
                         <ListView.View>
                             <GridView>
-                                <GridViewColumn Width="200" Header="Title">
+                                <GridViewColumn Width="200"
+                                                Header="Title">
                                     <GridViewColumn.CellTemplate>
                                         <DataTemplate>
                                             <TextBlock Text="{Binding Title, Converter={converters:HtmlDecodeConverter}}">
                                                 <TextBlock.ToolTip>
                                                     <StackPanel MaxWidth="350">
                                                         <TextBlock>
-                                                            <TextBlock Text="{Binding Title, Converter={converters:HtmlDecodeConverter}}" TextWrapping="Wrap" />
+                                                            <TextBlock Text="{Binding Title, Converter={converters:HtmlDecodeConverter}}"
+                                                                       TextWrapping="Wrap" />
                                                         </TextBlock>
                                                         <Border Margin="0,8"
                                                                 BorderBrush="Silver"
                                                                 BorderThickness="0,1,0,0" />
                                                         <WrapPanel>
                                                             <TextBlock>Date Posted: &#160;</TextBlock>
-                                                            <TextBlock FontStyle="Italic" Text="{Binding DateCreated}" />
+                                                            <TextBlock FontStyle="Italic"
+                                                                       Text="{Binding DateCreated}" />
                                                         </WrapPanel>
                                                     </StackPanel>
                                                 </TextBlock.ToolTip>
@@ -214,7 +224,8 @@
                         </ListView.View>
                         <ListView.ContextMenu>
                             <ContextMenu>
-                                <MenuItem Command="{Binding BrowseInGWBCommand}" Header="Browse in GWB" />
+                                <MenuItem Command="{Binding BrowseInGWBCommand}"
+                                          Header="Browse in GWB" />
                             </ContextMenu>
                         </ListView.ContextMenu>
                     </ListView>
@@ -274,6 +285,3 @@
         </Grid>
     </controls:MetroContentControl>
 </controls:MetroWindow>
-
-
-

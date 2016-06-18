@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Data;
-using GeeksWithBlogsToMarkdown.Converters.Base;
+﻿using GeeksWithBlogsToMarkdown.Converters.Base;
 using GeeksWithBlogsToMarkdown.Extensions;
+using System;
+using System.Globalization;
+using System.Windows.Data;
 
 namespace GeeksWithBlogsToMarkdown.Converters
 {
@@ -14,7 +10,6 @@ namespace GeeksWithBlogsToMarkdown.Converters
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-
             Settings.Instance.ReadSettings();
             var password = Settings.Instance.GWBPassword.DecryptString().ToInsecureString();
             if (!string.IsNullOrWhiteSpace(password))

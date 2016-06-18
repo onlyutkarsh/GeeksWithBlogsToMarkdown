@@ -11,8 +11,10 @@ namespace GeeksWithBlogsToMarkdown.TokenReplacement
     /// </summary>
     public class FastReplacer
     {
-        private readonly string _tokenOpen;
+        private readonly Dictionary<string, List<TokenOccurrence>> _occurrencesOfToken;
+        private readonly FastReplacerSnippet _rootSnippet = new FastReplacerSnippet("");
         private readonly string _tokenClose;
+        private readonly string _tokenOpen;
 
         /// <summary>
         /// All tokens that will be replaced must have same opening and closing delimiters, such as "{" and "}".
@@ -32,17 +34,6 @@ namespace GeeksWithBlogsToMarkdown.TokenReplacement
             _occurrencesOfToken = new Dictionary<string, List<TokenOccurrence>>(stringComparer);
         }
 
-        private readonly FastReplacerSnippet _rootSnippet = new FastReplacerSnippet("");
-
-        private class TokenOccurrence
-        {
-            public FastReplacerSnippet Snippet;
-            public int Start; // Position of a token in the snippet.
-            public int End; // Position of a token in the snippet.
-        }
-
-        private readonly Dictionary<string, List<TokenOccurrence>> _occurrencesOfToken;
-
         public void Append(string text)
         {
             var snippet = new FastReplacerSnippet(text);
@@ -50,17 +41,25 @@ namespace GeeksWithBlogsToMarkdown.TokenReplacement
             ExtractTokens(snippet);
         }
 
+        public bool Contains(string token)
+        {
+            ValidateToken(token, token, false);
+            List<TokenOccurrence> occurrences;
+            if (_occurrencesOfToken.TryGetValue(token, out occurrences))
+                return occurrences.Count > 0;
+            return false;
+        }
+
         /// <returns>Returns true if the token was found, false if nothing was replaced.</returns>
-        public bool Replace(string token, string text)
+        public bool InsertAfter(string token, string text)
         {
             ValidateToken(token, text, false);
             List<TokenOccurrence> occurrences;
             if (_occurrencesOfToken.TryGetValue(token, out occurrences) && occurrences.Count > 0)
             {
-                _occurrencesOfToken.Remove(token);
                 var snippet = new FastReplacerSnippet(text);
                 foreach (var occurrence in occurrences)
-                    occurrence.Snippet.Replace(occurrence.Start, occurrence.End, snippet);
+                    occurrence.Snippet.InsertAfter(occurrence.End, snippet);
                 ExtractTokens(snippet);
                 return true;
             }
@@ -84,28 +83,31 @@ namespace GeeksWithBlogsToMarkdown.TokenReplacement
         }
 
         /// <returns>Returns true if the token was found, false if nothing was replaced.</returns>
-        public bool InsertAfter(string token, string text)
+        public bool Replace(string token, string text)
         {
             ValidateToken(token, text, false);
             List<TokenOccurrence> occurrences;
             if (_occurrencesOfToken.TryGetValue(token, out occurrences) && occurrences.Count > 0)
             {
+                _occurrencesOfToken.Remove(token);
                 var snippet = new FastReplacerSnippet(text);
                 foreach (var occurrence in occurrences)
-                    occurrence.Snippet.InsertAfter(occurrence.End, snippet);
+                    occurrence.Snippet.Replace(occurrence.Start, occurrence.End, snippet);
                 ExtractTokens(snippet);
                 return true;
             }
             return false;
         }
 
-        public bool Contains(string token)
+        public override string ToString()
         {
-            ValidateToken(token, token, false);
-            List<TokenOccurrence> occurrences;
-            if (_occurrencesOfToken.TryGetValue(token, out occurrences))
-                return occurrences.Count > 0;
-            return false;
+            int totalTextLength = _rootSnippet.GetLength();
+            var sb = new StringBuilder(totalTextLength);
+            _rootSnippet.ToString(sb);
+            if (sb.Length != totalTextLength)
+                throw new InvalidOperationException(
+                    $"Internal error: Calculated total text length ({totalTextLength}) is different from actual ({sb.Length}).");
+            return sb.ToString();
         }
 
         private void ExtractTokens(FastReplacerSnippet snippet)
@@ -170,15 +172,12 @@ namespace GeeksWithBlogsToMarkdown.TokenReplacement
                     $"Next token is opened before a previous token was closed in token \"{token}\". Used with text \"{context}\".");
         }
 
-        public override string ToString()
+        private class TokenOccurrence
         {
-            int totalTextLength = _rootSnippet.GetLength();
-            var sb = new StringBuilder(totalTextLength);
-            _rootSnippet.ToString(sb);
-            if (sb.Length != totalTextLength)
-                throw new InvalidOperationException(
-                    $"Internal error: Calculated total text length ({totalTextLength}) is different from actual ({sb.Length}).");
-            return sb.ToString();
+            public int End;
+            public FastReplacerSnippet Snippet;
+            public int Start; // Position of a token in the snippet.
+                              // Position of a token in the snippet.
         }
     }
 }

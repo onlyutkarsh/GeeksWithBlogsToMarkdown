@@ -26,8 +26,20 @@ namespace GeeksWithBlogsToMarkdown.Commands.Base
         private readonly Action<T> _executeMethod;
         private bool _isExecuting;
 
+        public event EventHandler CanExecuteChanged
+        {
+            add
+            {
+                CommandManager.RequerySuggested += value;
+            }
+            remove
+            {
+                CommandManager.RequerySuggested -= value;
+            }
+        }
+
         public DelegateCommand(Action<T> executeMethod)
-            : this(executeMethod, null)
+                    : this(executeMethod, null)
         {
         }
 
@@ -41,21 +53,17 @@ namespace GeeksWithBlogsToMarkdown.Commands.Base
             _canExecuteMethod = canExecuteMethod;
         }
 
-        public event EventHandler CanExecuteChanged
+        public bool CanExecute(T parameter)
         {
-            add
-            {
-                CommandManager.RequerySuggested += value;
-            }
-            remove
-            {
-                CommandManager.RequerySuggested -= value;
-            }
+            if (_canExecuteMethod == null)
+                return true;
+
+            return _canExecuteMethod(parameter);
         }
 
-        public void RaiseCanExecuteChanged()
+        public void Execute(T parameter)
         {
-            CommandManager.InvalidateRequerySuggested();
+            _executeMethod(parameter);
         }
 
         bool ICommand.CanExecute(object parameter)
@@ -78,17 +86,9 @@ namespace GeeksWithBlogsToMarkdown.Commands.Base
             }
         }
 
-        public bool CanExecute(T parameter)
+        public void RaiseCanExecuteChanged()
         {
-            if (_canExecuteMethod == null)
-                return true;
-
-            return _canExecuteMethod(parameter);
-        }
-
-        public void Execute(T parameter)
-        {
-            _executeMethod(parameter);
+            CommandManager.InvalidateRequerySuggested();
         }
     }
 }

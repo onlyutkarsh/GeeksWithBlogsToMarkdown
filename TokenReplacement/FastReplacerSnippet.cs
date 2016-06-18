@@ -6,32 +6,14 @@ namespace GeeksWithBlogsToMarkdown.TokenReplacement
 {
     internal class FastReplacerSnippet
     {
-        private class InnerSnippet
-        {
-            public FastReplacerSnippet Snippet;
-            public int Start; // Position of the snippet in parent snippet's Text.
-            public int End; // Position of the snippet in parent snippet's Text.
-            public int Order1; // Order of snippets with a same Start position in their parent.
-            public int Order2; // Order of snippets with a same Start position and Order1 in their parent.
-
-            public override string ToString()
-            {
-                return "InnerSnippet: " + Snippet.Text;
-            }
-        }
-
         public readonly string Text;
+
         private readonly List<InnerSnippet> _innerSnippets;
 
         public FastReplacerSnippet(string text)
         {
             Text = text;
             _innerSnippets = new List<InnerSnippet>();
-        }
-
-        public override string ToString()
-        {
-            return "Snippet: " + Text;
         }
 
         public void Append(FastReplacerSnippet snippet)
@@ -42,6 +24,41 @@ namespace GeeksWithBlogsToMarkdown.TokenReplacement
                 Start = Text.Length,
                 End = Text.Length,
                 Order1 = 1,
+                Order2 = _innerSnippets.Count
+            });
+        }
+
+        public int GetLength()
+        {
+            int len = Text.Length;
+            foreach (var innerSnippet in _innerSnippets)
+            {
+                len -= innerSnippet.End - innerSnippet.Start;
+                len += innerSnippet.Snippet.GetLength();
+            }
+            return len;
+        }
+
+        public void InsertAfter(int end, FastReplacerSnippet snippet)
+        {
+            _innerSnippets.Add(new InnerSnippet
+            {
+                Snippet = snippet,
+                Start = end,
+                End = end,
+                Order1 = 1,
+                Order2 = _innerSnippets.Count
+            });
+        }
+
+        public void InsertBefore(int start, FastReplacerSnippet snippet)
+        {
+            _innerSnippets.Add(new InnerSnippet
+            {
+                Snippet = snippet,
+                Start = start,
+                End = start,
+                Order1 = 2,
                 Order2 = _innerSnippets.Count
             });
         }
@@ -58,28 +75,9 @@ namespace GeeksWithBlogsToMarkdown.TokenReplacement
             });
         }
 
-        public void InsertBefore(int start, FastReplacerSnippet snippet)
+        public override string ToString()
         {
-            _innerSnippets.Add(new InnerSnippet
-            {
-                Snippet = snippet,
-                Start = start,
-                End = start,
-                Order1 = 2,
-                Order2 = _innerSnippets.Count
-            });
-        }
-
-        public void InsertAfter(int end, FastReplacerSnippet snippet)
-        {
-            _innerSnippets.Add(new InnerSnippet
-            {
-                Snippet = snippet,
-                Start = end,
-                End = end,
-                Order1 = 1,
-                Order2 = _innerSnippets.Count
-            });
+            return "Snippet: " + Text;
         }
 
         public void ToString(StringBuilder sb)
@@ -107,15 +105,24 @@ namespace GeeksWithBlogsToMarkdown.TokenReplacement
             sb.Append(Text, lastPosition, Text.Length - lastPosition);
         }
 
-        public int GetLength()
+        private class InnerSnippet
         {
-            int len = Text.Length;
-            foreach (var innerSnippet in _innerSnippets)
+            public int End;
+
+            // Position of the snippet in parent snippet's Text.
+            public int Order1;
+
+            // Order of snippets with a same Start position in their parent.
+            public int Order2;
+
+            public FastReplacerSnippet Snippet;
+            public int Start; // Position of the snippet in parent snippet's Text.
+                              // Order of snippets with a same Start position and Order1 in their parent.
+
+            public override string ToString()
             {
-                len -= innerSnippet.End - innerSnippet.Start;
-                len += innerSnippet.Snippet.GetLength();
+                return "InnerSnippet: " + Snippet.Text;
             }
-            return len;
         }
     }
 }

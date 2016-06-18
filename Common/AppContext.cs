@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace GeeksWithBlogsToMarkdown.Common
 {
@@ -16,10 +12,10 @@ namespace GeeksWithBlogsToMarkdown.Common
             get { return _lazy.Value; }
         }
 
+        public string ApplicationName => "Geekswithblogs to Markdown";
+
         private AppContext()
         {
         }
-
-        public string ApplicationName => "Geekswithblogs to Markdown";
     }
 }

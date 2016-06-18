@@ -1,14 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Policy;
-using System.Text;
-using System.Threading.Tasks;
-using BlogML;
+﻿using BlogML;
 using BlogML.Xml;
 using CookComputing.XmlRpc;
 using GeeksWithBlogsToMarkdown.Extensions;
 using MahApps.Metro.Controls.Dialogs;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace GeeksWithBlogsToMarkdown.Service
 {
@@ -16,10 +14,11 @@ namespace GeeksWithBlogsToMarkdown.Service
     {
         //TODO: Ensure class is sealed
         private static readonly Lazy<GWBService> _lazy = new Lazy<GWBService>(() => new GWBService());
+
         private readonly ICSMetaWeblog _proxy;
-        private string _userName;
-        private string _password;
         private string _blogId;
+        private string _password;
+        private string _userName;
 
         public static GWBService Instance
         {
@@ -50,7 +49,6 @@ namespace GeeksWithBlogsToMarkdown.Service
 
                 await Task.Run(() =>
                 {
-
                     foreach (BlogInfo blog in blogs)
                     {
                         BlogMLBlog xblog = new BlogMLBlog
@@ -67,7 +65,6 @@ namespace GeeksWithBlogsToMarkdown.Service
                         xblog.Posts.AddRange(posts);
                         response.Data = xblog;
                     }
-
                 });
             }
             catch (Exception exception)
@@ -75,14 +72,6 @@ namespace GeeksWithBlogsToMarkdown.Service
                 response.Exception = exception;
             }
             return response;
-        }
-
-        private IEnumerable<BlogMLPost> GetPosts(BlogInfo blog, IEnumerable<BlogMLCategory> categories)
-        {
-            var posts = from p in _proxy.getRecentPosts(blog.blogid, _userName, _password, 1000)
-                        select BuildPost(p, categories);
-            return posts;
-
         }
 
         private BlogMLPost BuildPost(Post p, IEnumerable<BlogMLCategory> categories)
@@ -114,12 +103,16 @@ namespace GeeksWithBlogsToMarkdown.Service
 
         private IEnumerable<BlogMLCategory> GetCategories(BlogInfo blog)
         {
-
             var categories = from c in _proxy.getCategories(blog.blogid, _userName, _password)
                              select new BlogMLCategory() { ID = c.categoryid, Title = c.title, Description = c.description, Approved = true };
             return categories;
-
         }
 
+        private IEnumerable<BlogMLPost> GetPosts(BlogInfo blog, IEnumerable<BlogMLCategory> categories)
+        {
+            var posts = from p in _proxy.getRecentPosts(blog.blogid, _userName, _password, 1000)
+                        select BuildPost(p, categories);
+            return posts;
+        }
     }
 }

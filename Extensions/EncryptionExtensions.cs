@@ -1,24 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Security;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace GeeksWithBlogsToMarkdown.Extensions
 {
     public static class EncryptionExtensions
     {
-        static byte[] entropy = Encoding.Unicode.GetBytes("GWB-F66DF9AA-1401-4068-8C77-27D0890F2F73");
-
-        public static string EncryptString(this SecureString input)
-        {
-            byte[] encryptedData = System.Security.Cryptography.ProtectedData.Protect(
-                Encoding.Unicode.GetBytes(ToInsecureString(input)),
-                entropy,
-                System.Security.Cryptography.DataProtectionScope.CurrentUser);
-            return Convert.ToBase64String(encryptedData);
-        }
+        private static byte[] entropy = Encoding.Unicode.GetBytes("GWB-F66DF9AA-1401-4068-8C77-27D0890F2F73");
 
         public static SecureString DecryptString(this string encryptedData)
         {
@@ -33,7 +21,6 @@ namespace GeeksWithBlogsToMarkdown.Extensions
                     return ToSecureString(Encoding.Unicode.GetString(decryptedData));
                 }
                 return new SecureString();
-
             }
             catch
             {
@@ -41,15 +28,13 @@ namespace GeeksWithBlogsToMarkdown.Extensions
             }
         }
 
-        public static SecureString ToSecureString(this string input)
+        public static string EncryptString(this SecureString input)
         {
-            SecureString secure = new SecureString();
-            foreach (char c in input)
-            {
-                secure.AppendChar(c);
-            }
-            secure.MakeReadOnly();
-            return secure;
+            byte[] encryptedData = System.Security.Cryptography.ProtectedData.Protect(
+                Encoding.Unicode.GetBytes(ToInsecureString(input)),
+                entropy,
+                System.Security.Cryptography.DataProtectionScope.CurrentUser);
+            return Convert.ToBase64String(encryptedData);
         }
 
         public static string ToInsecureString(this SecureString input)
@@ -65,6 +50,17 @@ namespace GeeksWithBlogsToMarkdown.Extensions
                 System.Runtime.InteropServices.Marshal.ZeroFreeBSTR(ptr);
             }
             return returnValue;
+        }
+
+        public static SecureString ToSecureString(this string input)
+        {
+            SecureString secure = new SecureString();
+            foreach (char c in input)
+            {
+                secure.AppendChar(c);
+            }
+            secure.MakeReadOnly();
+            return secure;
         }
     }
 }

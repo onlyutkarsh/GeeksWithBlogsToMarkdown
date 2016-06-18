@@ -27,6 +27,7 @@ namespace GeeksWithBlogsToMarkdown.ViewModels
         private ObservableCollection<BlogMLPost> _blogPosts;
         private string _blogTitle;
         private string _blogUrl;
+        private DelegateCommand _browseInGwbCommand;
         private IDialogCoordinator _dialogCoordinator;
         private ICommand _getPostsCommand;
         private string _htmlMarkup;
@@ -34,7 +35,110 @@ namespace GeeksWithBlogsToMarkdown.ViewModels
         private ICommand _saveAllPostsCommand;
         private ICommand _savePostCommand;
         private DelegateCommand<object> _selectionChangedCommand;
-        private DelegateCommand _browseInGwbCommand;
+
+        public ObservableCollection<BlogMLPost> BlogPosts
+        {
+            get { return _blogPosts; }
+            set
+            {
+                _blogPosts = value;
+                NotifyPropertyChanged();
+            }
+        }
+
+        public string BlogTitle
+        {
+            get { return _blogTitle; }
+            set
+            {
+                _blogTitle = value;
+                NotifyPropertyChanged();
+            }
+        }
+
+        public string BlogUrl
+        {
+            get { return _blogUrl; }
+            set
+            {
+                _blogUrl = value;
+                NotifyPropertyChanged();
+            }
+        }
+
+        public DelegateCommand BrowseInGWBCommand
+        {
+            get { return _browseInGwbCommand; }
+            set
+            {
+                _browseInGwbCommand = value;
+                NotifyPropertyChanged();
+            }
+        }
+
+        public ICommand GetPostsCommand
+        {
+            get { return _getPostsCommand; }
+            set
+            {
+                _getPostsCommand = value;
+                NotifyPropertyChanged();
+            }
+        }
+
+        public string HtmlMarkup
+        {
+            get { return _htmlMarkup; }
+            set
+            {
+                _htmlMarkup = value;
+                NotifyPropertyChanged();
+            }
+        }
+
+        public string Markdown
+        {
+            get { return _markdown; }
+            set
+            {
+                _markdown = value;
+                NotifyPropertyChanged();
+            }
+        }
+
+        public ICommand SaveAllPostsCommand
+        {
+            get { return _saveAllPostsCommand; }
+            set
+            {
+                _saveAllPostsCommand = value;
+                NotifyPropertyChanged();
+            }
+        }
+
+        public ICommand SavePostCommand
+        {
+            get { return _savePostCommand; }
+            set
+            {
+                _savePostCommand = value;
+                NotifyPropertyChanged();
+            }
+        }
+
+        public BlogMLPost SelectedPost { get; set; }
+
+        public DelegateCommand<object> SelectionChangedCommand
+        {
+            get { return _selectionChangedCommand; }
+            set
+            {
+                _selectionChangedCommand = value;
+                NotifyPropertyChanged();
+            }
+        }
+
+        public ICommand ShowSettingsCommand { get; set; }
 
         public MainWindowViewModel(IDialogCoordinator dialogCoordinator)
         {
@@ -47,24 +151,6 @@ namespace GeeksWithBlogsToMarkdown.ViewModels
             BrowseInGWBCommand = new DelegateCommand(OnBrowseInGWB, () => SelectedPost != null);
 
             Settings.Instance.ReadSettings();
-        }
-
-        public DelegateCommand BrowseInGWBCommand
-        {
-            get { return _browseInGwbCommand; }
-            set
-            {
-                _browseInGwbCommand = value; 
-                NotifyPropertyChanged();
-            }
-        }
-
-        private void OnBrowseInGWB()
-        {
-            var post = SelectedPost;
-
-            Process.Start(post.PostUrl);
-
         }
 
         public string GetSuggestedFilenameFromTitle(BlogMLPost post)
@@ -101,14 +187,19 @@ namespace GeeksWithBlogsToMarkdown.ViewModels
             return $"{fr}{Environment.NewLine}{markdown}";
         }
 
+        private void OnBrowseInGWB()
+        {
+            var post = SelectedPost;
+
+            Process.Start(post.PostUrl);
+        }
+
         private async void OnGetPosts(MetroWindow metroWindow)
         {
-
             if (string.IsNullOrWhiteSpace(Settings.Instance.GWBBlogUrl) ||
                 (string.IsNullOrWhiteSpace(Settings.Instance.GWBUserName) &&
                 string.IsNullOrWhiteSpace(Settings.Instance.GWBPassword)))
             {
-
                 var settingsFlyout = metroWindow.Flyouts.Items[0] as Flyout;
                 if (settingsFlyout == null)
                 {
@@ -118,7 +209,7 @@ namespace GeeksWithBlogsToMarkdown.ViewModels
                 settingsFlyout.IsOpen = true;
                 return;
             }
-           
+
             ProgressDialogController progressController = await _dialogCoordinator.ShowProgressAsync(this, AppContext.Instance.ApplicationName, "Getting blog posts...");
             progressController.SetIndeterminate();
             //Connect to GWB
@@ -180,6 +271,17 @@ namespace GeeksWithBlogsToMarkdown.ViewModels
                 var markdown = converter.Convert(post.Content.Text);
                 Markdown = AddFrontmatter(post, markdown);
             }
+        }
+
+        private void OnShowSettings(MetroWindow metroWindow)
+        {
+            var settingsFlyout = metroWindow.Flyouts.Items[0] as Flyout;
+            if (settingsFlyout == null)
+            {
+                return;
+            }
+            settingsFlyout.DataContext = new SettingsViewModel();
+            settingsFlyout.IsOpen = true;
         }
 
         private async Task<LoginDialogData> PromptForCredentials(MetroWindow metroWindow)
@@ -278,110 +380,5 @@ namespace GeeksWithBlogsToMarkdown.ViewModels
                 File.WriteAllText(markdownPath, markdown);
             }
         }
-
-        private void OnShowSettings(MetroWindow metroWindow)
-        {
-            var settingsFlyout = metroWindow.Flyouts.Items[0] as Flyout;
-            if (settingsFlyout == null)
-            {
-                return;
-            }
-            settingsFlyout.DataContext = new SettingsViewModel();
-            settingsFlyout.IsOpen = true;
-        }
-
-        public ObservableCollection<BlogMLPost> BlogPosts
-        {
-            get { return _blogPosts; }
-            set
-            {
-                _blogPosts = value;
-                NotifyPropertyChanged();
-            }
-        }
-
-        public string BlogTitle
-        {
-            get { return _blogTitle; }
-            set
-            {
-                _blogTitle = value;
-                NotifyPropertyChanged();
-            }
-        }
-
-        public string BlogUrl
-        {
-            get { return _blogUrl; }
-            set
-            {
-                _blogUrl = value;
-                NotifyPropertyChanged();
-            }
-        }
-
-        public ICommand GetPostsCommand
-        {
-            get { return _getPostsCommand; }
-            set
-            {
-                _getPostsCommand = value;
-                NotifyPropertyChanged();
-            }
-        }
-
-        public string HtmlMarkup
-        {
-            get { return _htmlMarkup; }
-            set
-            {
-                _htmlMarkup = value;
-                NotifyPropertyChanged();
-            }
-        }
-
-        public string Markdown
-        {
-            get { return _markdown; }
-            set
-            {
-                _markdown = value;
-                NotifyPropertyChanged();
-            }
-        }
-
-        public ICommand SaveAllPostsCommand
-        {
-            get { return _saveAllPostsCommand; }
-            set
-            {
-                _saveAllPostsCommand = value;
-                NotifyPropertyChanged();
-            }
-        }
-
-        public ICommand SavePostCommand
-        {
-            get { return _savePostCommand; }
-            set
-            {
-                _savePostCommand = value;
-                NotifyPropertyChanged();
-            }
-        }
-
-        public BlogMLPost SelectedPost { get; set; }
-
-        public DelegateCommand<object> SelectionChangedCommand
-        {
-            get { return _selectionChangedCommand; }
-            set
-            {
-                _selectionChangedCommand = value;
-                NotifyPropertyChanged();
-            }
-        }
-
-        public ICommand ShowSettingsCommand { get; set; }
     }
 }

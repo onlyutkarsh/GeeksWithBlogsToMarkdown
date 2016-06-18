@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Windows;
 
 namespace GeeksWithBlogsToMarkdown.Common
@@ -30,9 +26,11 @@ namespace GeeksWithBlogsToMarkdown.Common
         }
     }
 
-    abstract class StaHelper
+    internal abstract class StaHelper
     {
-        readonly ManualResetEvent _complete = new ManualResetEvent(false);
+        private readonly ManualResetEvent _complete = new ManualResetEvent(false);
+
+        public bool DontRetryWorkOnFailed { get; set; }
 
         public void Go()
         {
@@ -43,6 +41,9 @@ namespace GeeksWithBlogsToMarkdown.Common
             thread.SetApartmentState(ApartmentState.STA);
             thread.Start();
         }
+
+        // Implemented in base class to do actual work.
+        protected abstract void Work();
 
         // Thread entry method
         private void DoWork()
@@ -74,10 +75,5 @@ namespace GeeksWithBlogsToMarkdown.Common
                 _complete.Set();
             }
         }
-
-        public bool DontRetryWorkOnFailed { get; set; }
-
-        // Implemented in base class to do actual work.
-        protected abstract void Work();
     }
 }

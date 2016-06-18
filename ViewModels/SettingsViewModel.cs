@@ -20,52 +20,32 @@ namespace GeeksWithBlogsToMarkdown.ViewModels
     {
         public Dictionary<string, string> Errors = new Dictionary<string, string>();
         private ICommand _cancelCommand;
+        private string _customImagesFolder;
+        private ICommand _customImagesFolderCommand;
         private ICommand _editPasswordCommand;
         private string _frontMatter;
         private string _gwbBlogUrl;
         private string _gwbPassword;
         private string _gwbUserName;
+        private string _imagesFolder;
         private string _message;
         private string _outputFolder;
 
         private ICommand _saveCommand;
-        private ICommand _showPasswordCommand;
-
         private bool _showPasswordChecked;
-        private string _imagesFolder;
+        private ICommand _showPasswordCommand;
+        public DelegateCommand BrowseForImagesFolderCommand { get; set; }
 
-        public bool ShowPasswordChecked
+        public DelegateCommand BrowseForOutputFolderCommand { get; set; }
+
+        public ICommand CancelCommand
         {
-            get { return _showPasswordChecked; }
+            get { return _cancelCommand; }
             set
             {
-                _showPasswordChecked = value;
+                _cancelCommand = value;
                 NotifyPropertyChanged();
             }
-        }
-
-        public SettingsViewModel()
-        {
-            ShowMessageCommand = new DelegateCommand(OnShowMessage);
-            BrowseForOutputFolderCommand = new DelegateCommand(OnBrowseForOutputFolder);
-            BrowseForImagesFolderCommand = new DelegateCommand(OnBrowseForImagesFolder);
-            SaveCommand = new DelegateCommand(OnSave);
-            CancelCommand = new DelegateCommand(OnCancel);
-            ShowPasswordCommand = new DelegateCommand<ToggleButton>(OnShowPassword);
-            EditPasswordCommand = new DelegateCommand<ToggleButton>(OnEditPassword);
-
-            CustomImagesFolderCommand = new DelegateCommand<string>(OnCustomImageFolder);
-
-            ShowPasswordChecked = false;
-
-            Settings.Instance.ReadSettings();
-            GWBUserName = Settings.Instance.GWBUserName;
-            GWBPassword = Settings.Instance.GWBPassword.DecryptString().ToInsecureString();
-            GWBBlogUrl = Settings.Instance.GWBBlogUrl;
-            OutputFolder = Settings.Instance.OutputFolder;
-            ImagesFolder = Settings.Instance.ImagesFolder;
-            CustomImagesFolder = Settings.Instance.CustomImagesFolder;
-            FrontMatter = Settings.Instance.FrontMatter;
         }
 
         public string CustomImagesFolder
@@ -78,201 +58,12 @@ namespace GeeksWithBlogsToMarkdown.ViewModels
             }
         }
 
-        private void OnCustomImageFolder(string text)
-        {
-            var window = Application.Current.MainWindow as MetroWindow;
-            window?.ShowMessageAsync(AppContext.Instance.ApplicationName, "Overwrite the images path if you are publishing generated markdown files for blog");
-        }
-
-        public DelegateCommand BrowseForImagesFolderCommand { get; set; }
-
-        private async void OnEditPassword(ToggleButton showPasswordButton)
-        {
-            var metroWindow = Application.Current.MainWindow as MetroWindow;
-            if (metroWindow != null)
-            {
-                var result = await PromptForCredentials(metroWindow);
-                if (result == null)
-                {
-                    //User pressed cancel
-                    return;
-                }
-                //user clicked Save in prompt
-                Settings.Instance.GWBUserName = result.Username;
-                Settings.Instance.GWBPassword = result.Password.ToSecureString().EncryptString();
-
-                Settings.Instance.WriteOrUpdateSettings();
-                Settings.Instance.ReadSettings();
-                GWBUserName = Settings.Instance.GWBUserName;
-
-                if (showPasswordButton.IsChecked.HasValue && showPasswordButton.IsChecked.Value)
-                {
-                    GWBPassword = Settings.Instance.GWBPassword.DecryptString().ToInsecureString();
-                }
-            }
-        }
-
-        public bool IsValid()
-        {
-            IsValidating = true;
-            try
-            {
-                //calls the indexer
-                NotifyPropertyChanged(() => GWBBlogUrl);
-                NotifyPropertyChanged(() => GWBUserName);
-                NotifyPropertyChanged(() => OutputFolder);
-                NotifyPropertyChanged(() => ImagesFolder);
-            }
-            finally
-            {
-                IsValidating = false;
-            }
-            return (!Errors.Any());
-        }
-
-        private void OnBrowseForOutputFolder()
-        {
-            VistaFolderBrowserDialog dialog = new VistaFolderBrowserDialog();
-            dialog.Description = @"Please select a folder to save posts...";
-            dialog.UseDescriptionForTitle = true; // This applies to the Vista style dialog only, not the old dialog.
-            if (!VistaFolderBrowserDialog.IsVistaFolderDialogSupported)
-            {
-                //Show default browser dialog
-            }
-            else
-            {
-                var showDialog = dialog.ShowDialog();
-                if (showDialog != null && (bool)showDialog)
-                {
-                    OutputFolder = dialog.SelectedPath;
-                }
-            }
-        }
-
-        private ICommand _customImagesFolderCommand;
-        private string _customImagesFolder;
-
         public ICommand CustomImagesFolderCommand
         {
             get { return _customImagesFolderCommand; }
             set
             {
                 _customImagesFolderCommand = value;
-                NotifyPropertyChanged();
-            }
-        }
-
-        private void OnBrowseForImagesFolder()
-        {
-            VistaFolderBrowserDialog dialog = new VistaFolderBrowserDialog();
-            dialog.Description = @"Please select a folder to save images...";
-            dialog.UseDescriptionForTitle = true; // This applies to the Vista style dialog only, not the old dialog.
-            if (!VistaFolderBrowserDialog.IsVistaFolderDialogSupported)
-            {
-                //Show default browser dialog
-            }
-            else
-            {
-                var showDialog = dialog.ShowDialog();
-                if (showDialog != null && (bool)showDialog)
-                {
-                    ImagesFolder = dialog.SelectedPath;
-                }
-            }
-        }
-
-        private void OnCancel()
-        {
-            var metroWindow = Application.Current.MainWindow as MetroWindow;
-            if (metroWindow != null)
-            {
-                var settingsFlyout = metroWindow.Flyouts.Items[0] as Flyout;
-                if (settingsFlyout == null)
-                {
-                    return;
-                }
-                IsValidating = false;
-                NotifyPropertyChanged(() => GWBBlogUrl);
-                NotifyPropertyChanged(() => GWBUserName);
-                NotifyPropertyChanged(() => OutputFolder);
-                NotifyPropertyChanged(() => ImagesFolder);
-                NotifyPropertyChanged(() => FrontMatter);
-                settingsFlyout.IsOpen = false;
-
-                ShowPasswordChecked = false;
-            }
-        }
-
-        private void OnSave()
-        {
-            if (IsValid())
-            {
-                //Save
-                Settings.Instance.GWBUserName = GWBUserName;
-                Settings.Instance.GWBPassword = GWBPassword.ToSecureString().EncryptString();
-                Settings.Instance.GWBBlogUrl = GWBBlogUrl.ToLower();
-                Settings.Instance.OutputFolder = OutputFolder;
-                Settings.Instance.ImagesFolder = ImagesFolder;
-                Settings.Instance.FrontMatter = FrontMatter;
-                Settings.Instance.CustomImagesFolder = CustomImagesFolder;
-
-                Settings.Instance.WriteOrUpdateSettings();
-
-                var metroWindow = Application.Current.MainWindow as MetroWindow;
-                if (metroWindow != null)
-                {
-                    var settingsFlyout = metroWindow.Flyouts.Items[0] as Flyout;
-                    if (settingsFlyout == null)
-                    {
-                        return;
-                    }
-                    settingsFlyout.IsOpen = false;
-                }
-            }
-        }
-
-        private void OnShowMessage()
-        {
-            var mainWindow = Application.Current.MainWindow as MetroWindow;
-            mainWindow?.ShowMessageAsync("GWB to Markdown", "Select the output folder");
-        }
-
-        private void OnShowPassword(ToggleButton button)
-        {
-            GWBPassword = string.Empty;
-
-            if (button.IsChecked.HasValue && button.IsChecked.Value)
-            {
-                var decryptedPassword = Settings.Instance.GWBPassword.DecryptString().ToInsecureString();
-                GWBPassword = decryptedPassword;
-            }
-        }
-
-        private async Task<LoginDialogData> PromptForCredentials(MetroWindow metroWindow)
-        {
-            Settings.Instance.ReadSettings();
-            var result = await metroWindow.ShowLoginAsync("Login to Geekswithblogs", "Geekswithblogs credentials",
-                new LoginDialogSettings
-                {
-                    InitialUsername = Settings.Instance.GWBUserName,
-                    InitialPassword = Settings.Instance.GWBPassword.DecryptString().ToInsecureString(),
-                    ShouldHideUsername = false,
-                    EnablePasswordPreview = true,
-                    ColorScheme = MetroDialogColorScheme.Theme,
-                    RememberCheckBoxVisibility = System.Windows.Visibility.Hidden,
-                    AffirmativeButtonText = "Save"
-                });
-            return result;
-        }
-
-        public DelegateCommand BrowseForOutputFolderCommand { get; set; }
-
-        public ICommand CancelCommand
-        {
-            get { return _cancelCommand; }
-            set
-            {
-                _cancelCommand = value;
                 NotifyPropertyChanged();
             }
         }
@@ -332,6 +123,16 @@ namespace GeeksWithBlogsToMarkdown.ViewModels
             }
         }
 
+        public string ImagesFolder
+        {
+            get { return _imagesFolder; }
+            set
+            {
+                _imagesFolder = value;
+                NotifyPropertyChanged();
+            }
+        }
+
         public bool IsValidating { get; set; }
 
         public string Message
@@ -354,16 +155,6 @@ namespace GeeksWithBlogsToMarkdown.ViewModels
             }
         }
 
-        public string ImagesFolder
-        {
-            get { return _imagesFolder; }
-            set
-            {
-                _imagesFolder = value;
-                NotifyPropertyChanged();
-            }
-        }
-
         public ICommand SaveCommand
         {
             get { return _saveCommand; }
@@ -375,6 +166,16 @@ namespace GeeksWithBlogsToMarkdown.ViewModels
         }
 
         public ICommand ShowMessageCommand { get; set; }
+
+        public bool ShowPasswordChecked
+        {
+            get { return _showPasswordChecked; }
+            set
+            {
+                _showPasswordChecked = value;
+                NotifyPropertyChanged();
+            }
+        }
 
         public ICommand ShowPasswordCommand
         {
@@ -459,6 +260,202 @@ namespace GeeksWithBlogsToMarkdown.ViewModels
                 if (result != string.Empty) Errors.Add(columnName, result);
                 return result;
             }
+        }
+
+        public SettingsViewModel()
+        {
+            ShowMessageCommand = new DelegateCommand(OnShowMessage);
+            BrowseForOutputFolderCommand = new DelegateCommand(OnBrowseForOutputFolder);
+            BrowseForImagesFolderCommand = new DelegateCommand(OnBrowseForImagesFolder);
+            SaveCommand = new DelegateCommand(OnSave);
+            CancelCommand = new DelegateCommand(OnCancel);
+            ShowPasswordCommand = new DelegateCommand<ToggleButton>(OnShowPassword);
+            EditPasswordCommand = new DelegateCommand<ToggleButton>(OnEditPassword);
+
+            CustomImagesFolderCommand = new DelegateCommand<string>(OnCustomImageFolder);
+
+            ShowPasswordChecked = false;
+
+            Settings.Instance.ReadSettings();
+            GWBUserName = Settings.Instance.GWBUserName;
+            GWBPassword = Settings.Instance.GWBPassword.DecryptString().ToInsecureString();
+            GWBBlogUrl = Settings.Instance.GWBBlogUrl;
+            OutputFolder = Settings.Instance.OutputFolder;
+            ImagesFolder = Settings.Instance.ImagesFolder;
+            CustomImagesFolder = Settings.Instance.CustomImagesFolder;
+            FrontMatter = Settings.Instance.FrontMatter;
+        }
+
+        public bool IsValid()
+        {
+            IsValidating = true;
+            try
+            {
+                //calls the indexer
+                NotifyPropertyChanged(() => GWBBlogUrl);
+                NotifyPropertyChanged(() => GWBUserName);
+                NotifyPropertyChanged(() => OutputFolder);
+                NotifyPropertyChanged(() => ImagesFolder);
+            }
+            finally
+            {
+                IsValidating = false;
+            }
+            return (!Errors.Any());
+        }
+
+        private void OnBrowseForImagesFolder()
+        {
+            VistaFolderBrowserDialog dialog = new VistaFolderBrowserDialog();
+            dialog.Description = @"Please select a folder to save images...";
+            dialog.UseDescriptionForTitle = true; // This applies to the Vista style dialog only, not the old dialog.
+            if (!VistaFolderBrowserDialog.IsVistaFolderDialogSupported)
+            {
+                //Show default browser dialog
+            }
+            else
+            {
+                var showDialog = dialog.ShowDialog();
+                if (showDialog != null && (bool)showDialog)
+                {
+                    ImagesFolder = dialog.SelectedPath;
+                }
+            }
+        }
+
+        private void OnBrowseForOutputFolder()
+        {
+            VistaFolderBrowserDialog dialog = new VistaFolderBrowserDialog();
+            dialog.Description = @"Please select a folder to save posts...";
+            dialog.UseDescriptionForTitle = true; // This applies to the Vista style dialog only, not the old dialog.
+            if (!VistaFolderBrowserDialog.IsVistaFolderDialogSupported)
+            {
+                //Show default browser dialog
+            }
+            else
+            {
+                var showDialog = dialog.ShowDialog();
+                if (showDialog != null && (bool)showDialog)
+                {
+                    OutputFolder = dialog.SelectedPath;
+                }
+            }
+        }
+
+        private void OnCancel()
+        {
+            var metroWindow = Application.Current.MainWindow as MetroWindow;
+            if (metroWindow != null)
+            {
+                var settingsFlyout = metroWindow.Flyouts.Items[0] as Flyout;
+                if (settingsFlyout == null)
+                {
+                    return;
+                }
+                IsValidating = false;
+                NotifyPropertyChanged(() => GWBBlogUrl);
+                NotifyPropertyChanged(() => GWBUserName);
+                NotifyPropertyChanged(() => OutputFolder);
+                NotifyPropertyChanged(() => ImagesFolder);
+                NotifyPropertyChanged(() => FrontMatter);
+                settingsFlyout.IsOpen = false;
+
+                ShowPasswordChecked = false;
+            }
+        }
+
+        private void OnCustomImageFolder(string text)
+        {
+            var window = Application.Current.MainWindow as MetroWindow;
+            window?.ShowMessageAsync(AppContext.Instance.ApplicationName, "Overwrite the images path if you are publishing generated markdown files for blog");
+        }
+
+        private async void OnEditPassword(ToggleButton showPasswordButton)
+        {
+            var metroWindow = Application.Current.MainWindow as MetroWindow;
+            if (metroWindow != null)
+            {
+                var result = await PromptForCredentials(metroWindow);
+                if (result == null)
+                {
+                    //User pressed cancel
+                    return;
+                }
+                //user clicked Save in prompt
+                Settings.Instance.GWBUserName = result.Username;
+                Settings.Instance.GWBPassword = result.Password.ToSecureString().EncryptString();
+
+                Settings.Instance.WriteOrUpdateSettings();
+                Settings.Instance.ReadSettings();
+                GWBUserName = Settings.Instance.GWBUserName;
+
+                if (showPasswordButton.IsChecked.HasValue && showPasswordButton.IsChecked.Value)
+                {
+                    GWBPassword = Settings.Instance.GWBPassword.DecryptString().ToInsecureString();
+                }
+            }
+        }
+
+        private void OnSave()
+        {
+            if (IsValid())
+            {
+                //Save
+                Settings.Instance.GWBUserName = GWBUserName;
+                Settings.Instance.GWBPassword = GWBPassword.ToSecureString().EncryptString();
+                Settings.Instance.GWBBlogUrl = GWBBlogUrl.ToLower();
+                Settings.Instance.OutputFolder = OutputFolder;
+                Settings.Instance.ImagesFolder = ImagesFolder;
+                Settings.Instance.FrontMatter = FrontMatter;
+                Settings.Instance.CustomImagesFolder = CustomImagesFolder;
+
+                Settings.Instance.WriteOrUpdateSettings();
+
+                var metroWindow = Application.Current.MainWindow as MetroWindow;
+                if (metroWindow != null)
+                {
+                    var settingsFlyout = metroWindow.Flyouts.Items[0] as Flyout;
+                    if (settingsFlyout == null)
+                    {
+                        return;
+                    }
+                    settingsFlyout.IsOpen = false;
+                }
+            }
+        }
+
+        private void OnShowMessage()
+        {
+            var mainWindow = Application.Current.MainWindow as MetroWindow;
+            mainWindow?.ShowMessageAsync("GWB to Markdown", "Select the output folder");
+        }
+
+        private void OnShowPassword(ToggleButton button)
+        {
+            GWBPassword = string.Empty;
+
+            if (button.IsChecked.HasValue && button.IsChecked.Value)
+            {
+                var decryptedPassword = Settings.Instance.GWBPassword.DecryptString().ToInsecureString();
+                GWBPassword = decryptedPassword;
+            }
+        }
+
+        private async Task<LoginDialogData> PromptForCredentials(MetroWindow metroWindow)
+        {
+            Settings.Instance.ReadSettings();
+            var result = await metroWindow.ShowLoginAsync("Login to Geekswithblogs", "Geekswithblogs credentials",
+                new LoginDialogSettings
+                {
+                    InitialUsername = Settings.Instance.GWBUserName,
+                    InitialPassword = Settings.Instance.GWBPassword.DecryptString().ToInsecureString(),
+                    ShouldHideUsername = false,
+                    EnablePasswordPreview = true,
+                    ColorScheme = MetroDialogColorScheme.Theme,
+                    RememberCheckBoxVisibility = System.Windows.Visibility.Hidden,
+                    AffirmativeButtonText = "Save"
+                });
+            return result;
         }
     }
 }

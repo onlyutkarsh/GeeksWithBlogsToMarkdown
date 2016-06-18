@@ -1,8 +1,7 @@
+using GeeksWithBlogsToMarkdown.Converters.Base;
 using System;
 using System.Globalization;
 using System.Windows.Data;
-using System.Windows.Markup;
-using GeeksWithBlogsToMarkdown.Converters.Base;
 
 namespace GeeksWithBlogsToMarkdown.Converters
 {

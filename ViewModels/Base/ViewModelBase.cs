@@ -7,6 +7,8 @@ namespace GeeksWithBlogsToMarkdown.ViewModels.Base
 {
     public abstract class ViewModelBase : INotifyPropertyChanged
     {
+        public event PropertyChangedEventHandler PropertyChanged;
+
         protected void NotifyPropertyChanged([CallerMemberName] string propertyName = null)
         {
             var deleg = PropertyChanged;
@@ -22,7 +24,5 @@ namespace GeeksWithBlogsToMarkdown.ViewModels.Base
             var deleg = PropertyChanged;
             deleg?.Invoke(this, new PropertyChangedEventArgs(memberName));
         }
-
-        public event PropertyChangedEventHandler PropertyChanged;
     }
 }

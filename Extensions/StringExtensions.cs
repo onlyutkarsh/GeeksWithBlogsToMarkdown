@@ -1,27 +1,21 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 
 namespace GeeksWithBlogsToMarkdown.Extensions
 {
     internal static class StringExtensions
     {
-        public static string ToHtmlDecodedString(this string text)
+        public static string AddOffsetToFileName(this string file, int offset)
         {
-            return WebUtility.HtmlDecode(text);
-        }
-        public static string SurroundWith(this string text, string quote)
-        {
-            return $"{quote}{text}{quote}";
+            return $"{file.StripOffsetFromFileName()}|{offset}";
         }
 
-        public static string UnsurroundWith(this string text, string quote)
+        public static string ReplaceDate(this string text)
         {
-            return text.Trim(quote.ToCharArray());
+            var datePattern = new Regex(@"\$DATE(?:\(""(.+)""\))?\$");
+            return datePattern.Replace(text, match => DateTime.Now.ToString(match?.Groups[1].Value));
         }
 
         public static string ReplaceSmartChars(this string smart)
@@ -44,27 +38,21 @@ namespace GeeksWithBlogsToMarkdown.Extensions
             return dumb;
         }
 
-        public static int WordCount(this string text)
-        {
-            return (text == null) ? 0 : Regex.Matches(text, @"[\S]+").Count;
-        }
-
-        public static string ReplaceDate(this string text)
-        {
-            var datePattern = new Regex(@"\$DATE(?:\(""(.+)""\))?\$");
-            return datePattern.Replace(text, match => DateTime.Now.ToString(match?.Groups[1].Value));
-        }
-
-        public static string AddOffsetToFileName(this string file, int offset)
-        {
-            return $"{file.StripOffsetFromFileName()}|{offset}";
-        }
-
         public static string StripOffsetFromFileName(this string file)
         {
             if (string.IsNullOrWhiteSpace(file)) return file;
             var index = file.IndexOf('|');
             return (index >= 0) ? file.Substring(0, index) : file;
+        }
+
+        public static string SurroundWith(this string text, string quote)
+        {
+            return $"{quote}{text}{quote}";
+        }
+
+        public static string ToHtmlDecodedString(this string text)
+        {
+            return WebUtility.HtmlDecode(text);
         }
 
         public static string ToSlug(this string value, bool toLower = false)
@@ -126,6 +114,16 @@ namespace GeeksWithBlogsToMarkdown.Extensions
             }
 
             return sb.ToString();
+        }
+
+        public static string UnsurroundWith(this string text, string quote)
+        {
+            return text.Trim(quote.ToCharArray());
+        }
+
+        public static int WordCount(this string text)
+        {
+            return (text == null) ? 0 : Regex.Matches(text, @"[\S]+").Count;
         }
 
         private static string ConvertEdgeCases(char c, bool toLower)

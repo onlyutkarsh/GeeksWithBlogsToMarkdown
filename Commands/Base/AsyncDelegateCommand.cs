@@ -23,8 +23,16 @@ namespace GeeksWithBlogsToMarkdown.Commands.Base
         private readonly DelegateCommand<T> _underlyingCommand;
         private bool _isExecuting;
 
+        public event EventHandler CanExecuteChanged
+        {
+            add { _underlyingCommand.CanExecuteChanged += value; }
+            remove { _underlyingCommand.CanExecuteChanged -= value; }
+        }
+
+        public ICommand Command { get { return this; } }
+
         public AsyncDelegateCommand(Func<T, Task> executeMethod)
-            : this(executeMethod, _ => true)
+                            : this(executeMethod, _ => true)
         {
         }
 
@@ -32,6 +40,16 @@ namespace GeeksWithBlogsToMarkdown.Commands.Base
         {
             _executeMethod = executeMethod;
             _underlyingCommand = new DelegateCommand<T>(x => { }, canExecuteMethod);
+        }
+
+        public bool CanExecute(object parameter)
+        {
+            return !_isExecuting && _underlyingCommand.CanExecute((T)parameter);
+        }
+
+        public async void Execute(object parameter)
+        {
+            await ExecuteAsync((T)parameter);
         }
 
         public async Task ExecuteAsync(T obj)
@@ -47,24 +65,6 @@ namespace GeeksWithBlogsToMarkdown.Commands.Base
                 _isExecuting = false;
                 RaiseCanExecuteChanged();
             }
-        }
-
-        public ICommand Command { get { return this; } }
-
-        public bool CanExecute(object parameter)
-        {
-            return !_isExecuting && _underlyingCommand.CanExecute((T)parameter);
-        }
-
-        public event EventHandler CanExecuteChanged
-        {
-            add { _underlyingCommand.CanExecuteChanged += value; }
-            remove { _underlyingCommand.CanExecuteChanged -= value; }
-        }
-
-        public async void Execute(object parameter)
-        {
-            await ExecuteAsync((T)parameter);
         }
 
         public void RaiseCanExecuteChanged()

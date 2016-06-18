@@ -1,15 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using GeeksWithBlogsToMarkdown.Converters.Base;
+using System;
 using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Data;
-using GeeksWithBlogsToMarkdown.Converters.Base;
 
 namespace GeeksWithBlogsToMarkdown.Converters
 {
-    public class DebuggingConverter: BaseConverter, IValueConverter
+    public class DebuggingConverter : BaseConverter, IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
