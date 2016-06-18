@@ -1,0 +1,33 @@
+<mockup version="1.0" skin="wireframe" fontFace="Balsamiq Sans" measuredW="889" measuredH="420" mockupW="829" mockupH="400">
+  <controls>
+    <control controlID="0" controlTypeID="com.balsamiq.mockups::TitleWindow" x="60" y="20" w="829" h="400" measuredW="450" measuredH="400" zOrder="0" locked="false" isInGroup="-1">
+      <controlProperties>
+        <close>true</close>
+        <maximizeRestore>true</maximizeRestore>
+        <minimize>true</minimize>
+        <text>Geekswithblogs%20to%20Markdown</text>
+      </controlProperties>
+    </control>
+    <control controlID="3" controlTypeID="com.balsamiq.mockups::Link" x="723" y="23" w="-1" h="-1" measuredW="51" measuredH="19" zOrder="1" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Settings</text>
+      </controlProperties>
+    </control>
+    <control controlID="4" controlTypeID="com.balsamiq.mockups::Link" x="789" y="23" w="-1" h="-1" measuredW="35" measuredH="19" zOrder="2" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>About</text>
+      </controlProperties>
+    </control>
+    <control controlID="5" controlTypeID="com.balsamiq.mockups::DataGrid" x="75" y="113" w="799" h="270" measuredW="340" measuredH="192" zOrder="3" locked="false" isInGroup="-1"/>
+    <control controlID="7" controlTypeID="com.balsamiq.mockups::Button" x="671" y="82" w="-1" h="-1" measuredW="118" measuredH="24" zOrder="4" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Fetch%20from%20GWB</text>
+      </controlProperties>
+    </control>
+    <control controlID="8" controlTypeID="com.balsamiq.mockups::Button" x="806" y="82" w="-1" h="-1" measuredW="68" measuredH="24" zOrder="5" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Save%20all</text>
+      </controlProperties>
+    </control>
+  </controls>
+</mockup>

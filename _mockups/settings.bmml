@@ -1,0 +1,43 @@
+<mockup version="1.0" skin="wireframe" fontFace="Balsamiq Sans" measuredW="937" measuredH="554" mockupW="656" mockupH="510">
+  <controls>
+    <control controlID="0" controlTypeID="com.balsamiq.mockups::TitleWindow" x="281" y="44" w="656" h="510" measuredW="450" measuredH="400" zOrder="0" locked="false" isInGroup="-1">
+      <controlProperties>
+        <bottomheight>22</bottomheight>
+        <dragger>false</dragger>
+        <text>Geekswithblogs%20to%20Markdown%20converter</text>
+        <topheight>26</topheight>
+      </controlProperties>
+    </control>
+    <control controlID="3" controlTypeID="com.balsamiq.mockups::TextInput" x="434" y="108" w="480" h="-1" measuredW="79" measuredH="23" zOrder="1" locked="false" isInGroup="-1"/>
+    <control controlID="4" controlTypeID="com.balsamiq.mockups::Label" x="304" y="109" w="-1" h="-1" measuredW="102" measuredH="21" zOrder="2" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>GWB%20User%20Name</text>
+      </controlProperties>
+    </control>
+    <control controlID="5" controlTypeID="com.balsamiq.mockups::TextInput" x="434" y="138" w="480" h="-1" measuredW="79" measuredH="23" zOrder="3" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text/>
+      </controlProperties>
+    </control>
+    <control controlID="6" controlTypeID="com.balsamiq.mockups::Label" x="316" y="139" w="-1" h="-1" measuredW="90" measuredH="21" zOrder="4" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>GWB%20Password</text>
+      </controlProperties>
+    </control>
+    <control controlID="7" controlTypeID="com.balsamiq.mockups::Button" x="863" y="176" w="-1" h="-1" measuredW="51" measuredH="24" zOrder="5" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Save</text>
+      </controlProperties>
+    </control>
+    <control controlID="8" controlTypeID="com.balsamiq.mockups::TextArea" x="304" y="242" w="610" h="279" measuredW="200" measuredH="140" zOrder="6" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>---%0Alayout%3A%20post%20%20%20%20%20%20%20%20%20%20%23important%3A%20don%27t%20change%20this%0Atitle%3A%20%22Export%20as%20PDF%20-%20VSTS%20extension%20to%20export%20build%20definition%20as%20PDF%22%0Adate%3A%202016-03-15%2010%3A00%3A00%20%0Aauthor%3A%20Utkarsh%20Shigihalli%20%0Acategories%3A%0A-%20%24%24CATEGORY%24%24%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%23important%3A%20leave%20this%20here%0Adescription%3A%20%24%24TITLE%24%24%0Aimg%3A%20%20%20%20%20%20%20%20%23place%20image%20%28850x450%29%20with%20this%20name%20in%20/images/screenshots%0Athumb%3A%20%20%20%20%20%20%23place%20thumbnail%20%2870x70%29%20with%20this%20name%20in%20/images/screenshots/thumbs/%0A---%0A%24%24EXCERPT%24%24%0A%3C%21--more--%3E%20%0A%24%24CONTENT%24%24</text>
+      </controlProperties>
+    </control>
+    <control controlID="9" controlTypeID="com.balsamiq.mockups::Label" x="304" y="215" w="-1" h="-1" measuredW="119" measuredH="21" zOrder="7" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Markdown%20Template</text>
+      </controlProperties>
+    </control>
+  </controls>
+</mockup>
