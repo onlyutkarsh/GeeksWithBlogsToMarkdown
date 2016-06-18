@@ -60,7 +60,7 @@ namespace GeeksWithBlogsToMarkdown.ViewModels
 
             Settings.Instance.ReadSettings();
             GWBUserName = Settings.Instance.GWBUserName;
-            GWBPassword = Settings.Instance.GWBPassword;//.DecryptString().ToInsecureString();
+            GWBPassword = Settings.Instance.GWBPassword.DecryptString().ToInsecureString();
             GWBBlogUrl = Settings.Instance.GWBBlogUrl;
             OutputFolder = Settings.Instance.OutputFolder;
             ImagesFolder = Settings.Instance.ImagesFolder;
@@ -99,7 +99,7 @@ namespace GeeksWithBlogsToMarkdown.ViewModels
                 }
                 //user clicked Save in prompt
                 Settings.Instance.GWBUserName = result.Username;
-                Settings.Instance.GWBPassword = result.Password;//.ToSecureString().EncryptString();
+                Settings.Instance.GWBPassword = result.Password.ToSecureString().EncryptString();
 
                 Settings.Instance.WriteOrUpdateSettings();
                 Settings.Instance.ReadSettings();
@@ -107,7 +107,7 @@ namespace GeeksWithBlogsToMarkdown.ViewModels
 
                 if (showPasswordButton.IsChecked.HasValue && showPasswordButton.IsChecked.Value)
                 {
-                    GWBPassword = Settings.Instance.GWBPassword;//.DecryptString().ToInsecureString();
+                    GWBPassword = Settings.Instance.GWBPassword.DecryptString().ToInsecureString();
                 }
             }
         }
@@ -117,8 +117,8 @@ namespace GeeksWithBlogsToMarkdown.ViewModels
             IsValidating = true;
             try
             {
+                //calls the indexer
                 NotifyPropertyChanged(() => GWBBlogUrl);
-                NotifyPropertyChanged(() => GWBPassword);
                 NotifyPropertyChanged(() => GWBUserName);
                 NotifyPropertyChanged(() => OutputFolder);
                 NotifyPropertyChanged(() => ImagesFolder);
@@ -209,7 +209,7 @@ namespace GeeksWithBlogsToMarkdown.ViewModels
             {
                 //Save
                 Settings.Instance.GWBUserName = GWBUserName;
-                Settings.Instance.GWBPassword = GWBPassword;//.ToSecureString().EncryptString();
+                Settings.Instance.GWBPassword = GWBPassword.ToSecureString().EncryptString();
                 Settings.Instance.GWBBlogUrl = GWBBlogUrl.ToLower();
                 Settings.Instance.OutputFolder = OutputFolder;
                 Settings.Instance.ImagesFolder = ImagesFolder;
@@ -243,7 +243,7 @@ namespace GeeksWithBlogsToMarkdown.ViewModels
 
             if (button.IsChecked.HasValue && button.IsChecked.Value)
             {
-                var decryptedPassword = Settings.Instance.GWBPassword;//.DecryptString().ToInsecureString();
+                var decryptedPassword = Settings.Instance.GWBPassword.DecryptString().ToInsecureString();
                 GWBPassword = decryptedPassword;
             }
         }
@@ -255,7 +255,7 @@ namespace GeeksWithBlogsToMarkdown.ViewModels
                 new LoginDialogSettings
                 {
                     InitialUsername = Settings.Instance.GWBUserName,
-                    InitialPassword = Settings.Instance.GWBPassword,//.DecryptString().ToInsecureString(),
+                    InitialPassword = Settings.Instance.GWBPassword.DecryptString().ToInsecureString(),
                     ShouldHideUsername = false,
                     EnablePasswordPreview = true,
                     ColorScheme = MetroDialogColorScheme.Theme,

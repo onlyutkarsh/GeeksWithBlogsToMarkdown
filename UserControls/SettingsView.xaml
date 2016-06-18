@@ -60,9 +60,12 @@
                          common:PasswordBoxAssistant.BoundPassword="{Binding Path=GWBPassword,
                                                                              Mode=TwoWay,
                                                                              UpdateSourceTrigger=PropertyChanged}"
+                         controls:TextBoxHelper.SelectAllOnFocus="True"
                          controls:TextBoxHelper.Watermark="{Binding GWBPassword,
-                                                                    Converter={converters:WatermarkConverter}}" />
-            <!--<StackPanel Grid.Column="2" Orientation="Horizontal">
+                                                                    Converter={converters:WatermarkConverter}}"
+                         Style="{StaticResource MetroButtonRevealedPasswordBox}" />
+            <!--<StackPanel Grid.Column="2"
+                        Orientation="Horizontal">
                 <ToggleButton x:Name="ShowPasswordButton"
                               Width="50"
                               Margin="5,0,0,0"
@@ -74,15 +77,18 @@
                                               RelativeSource={RelativeSource FindAncestor,
                                                                              AncestorType={x:Type ToggleButton}}}">
                         <Rectangle.OpacityMask>
-                            <VisualBrush Stretch="Fill" Visual="{DynamicResource appbar_eye}" />
+                            <VisualBrush Stretch="Fill"
+                                         Visual="{DynamicResource appbar_eye}" />
                         </Rectangle.OpacityMask>
                     </Rectangle>
                     <i:Interaction.Triggers>
                         <i:EventTrigger EventName="Checked">
-                            <base:EventToCommand Command="{Binding ShowPasswordCommand}" CommandParameter="{Binding ElementName=ShowPasswordButton}" />
+                            <base:EventToCommand Command="{Binding ShowPasswordCommand}"
+                                                 CommandParameter="{Binding ElementName=ShowPasswordButton}" />
                         </i:EventTrigger>
                         <i:EventTrigger EventName="Unchecked">
-                            <base:EventToCommand Command="{Binding ShowPasswordCommand}" CommandParameter="{Binding ElementName=ShowPasswordButton}" />
+                            <base:EventToCommand Command="{Binding ShowPasswordCommand}"
+                                                 CommandParameter="{Binding ElementName=ShowPasswordButton}" />
                         </i:EventTrigger>
                     </i:Interaction.Triggers>
                 </ToggleButton>

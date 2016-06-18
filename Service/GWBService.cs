@@ -32,7 +32,7 @@ namespace GeeksWithBlogsToMarkdown.Service
             Settings.Instance.ReadSettings();
 
             _userName = Settings.Instance.GWBUserName;
-            _password = Settings.Instance.GWBPassword;//.DecryptString().ToInsecureString();
+            _password = Settings.Instance.GWBPassword.DecryptString().ToInsecureString();
 
             var url = new Uri(Settings.Instance.GWBBlogUrl);
             _blogId = url.Segments[1].Replace("/", "");
@@ -45,7 +45,7 @@ namespace GeeksWithBlogsToMarkdown.Service
             var response = new BlogResponse<BlogMLBlog>();
             try
             {
-                _password = Settings.Instance.GWBPassword;//.DecryptString().ToInsecureString();
+                _password = Settings.Instance.GWBPassword.DecryptString().ToInsecureString();
                 var blogs = _proxy.getUsersBlogs(_blogId, _userName, _password);
 
                 await Task.Run(() =>

@@ -16,7 +16,7 @@ namespace GeeksWithBlogsToMarkdown.Converters
         {
 
             Settings.Instance.ReadSettings();
-            var password = Settings.Instance.GWBPassword;//.DecryptString().ToInsecureString();
+            var password = Settings.Instance.GWBPassword.DecryptString().ToInsecureString();
             if (!string.IsNullOrWhiteSpace(password))
                 return "\u25CF\u25CF\u25CF\u25CF\u25CF\u25CF\u25CF\u25CF\u25CF\u25CF";
             return "Password is empty.";
