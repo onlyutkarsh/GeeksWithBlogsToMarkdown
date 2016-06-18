@@ -24,11 +24,16 @@ namespace GeeksWithBlogsToMarkdown.Extensions
         {
             try
             {
-                byte[] decryptedData = System.Security.Cryptography.ProtectedData.Unprotect(
-                    Convert.FromBase64String(encryptedData),
-                    entropy,
-                    System.Security.Cryptography.DataProtectionScope.CurrentUser);
-                return ToSecureString(Encoding.Unicode.GetString(decryptedData));
+                if (!string.IsNullOrWhiteSpace(encryptedData))
+                {
+                    byte[] decryptedData = System.Security.Cryptography.ProtectedData.Unprotect(
+                                Convert.FromBase64String(encryptedData),
+                                entropy,
+                                System.Security.Cryptography.DataProtectionScope.CurrentUser);
+                    return ToSecureString(Encoding.Unicode.GetString(decryptedData));
+                }
+                return new SecureString();
+
             }
             catch
             {

@@ -1,19 +1,18 @@
-﻿using System;
-using GeeksWithBlogsToMarkdown.Commands.Base;
+﻿using GeeksWithBlogsToMarkdown.Commands.Base;
+using GeeksWithBlogsToMarkdown.Common;
 using GeeksWithBlogsToMarkdown.Extensions;
 using GeeksWithBlogsToMarkdown.ViewModels.Base;
 using MahApps.Metro.Controls;
 using MahApps.Metro.Controls.Dialogs;
 using Ookii.Dialogs.Wpf;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
-using GeeksWithBlogsToMarkdown.Common;
 
 namespace GeeksWithBlogsToMarkdown.ViewModels
 {
@@ -61,6 +60,7 @@ namespace GeeksWithBlogsToMarkdown.ViewModels
 
             Settings.Instance.ReadSettings();
             GWBUserName = Settings.Instance.GWBUserName;
+            GWBPassword = Settings.Instance.GWBPassword;//.DecryptString().ToInsecureString();
             GWBBlogUrl = Settings.Instance.GWBBlogUrl;
             OutputFolder = Settings.Instance.OutputFolder;
             ImagesFolder = Settings.Instance.ImagesFolder;
@@ -99,7 +99,7 @@ namespace GeeksWithBlogsToMarkdown.ViewModels
                 }
                 //user clicked Save in prompt
                 Settings.Instance.GWBUserName = result.Username;
-                Settings.Instance.GWBPassword = result.Password.ToSecureString().EncryptString();
+                Settings.Instance.GWBPassword = result.Password;//.ToSecureString().EncryptString();
 
                 Settings.Instance.WriteOrUpdateSettings();
                 Settings.Instance.ReadSettings();
@@ -107,7 +107,7 @@ namespace GeeksWithBlogsToMarkdown.ViewModels
 
                 if (showPasswordButton.IsChecked.HasValue && showPasswordButton.IsChecked.Value)
                 {
-                    GWBPassword = Settings.Instance.GWBPassword.DecryptString().ToInsecureString();
+                    GWBPassword = Settings.Instance.GWBPassword;//.DecryptString().ToInsecureString();
                 }
             }
         }
@@ -118,6 +118,7 @@ namespace GeeksWithBlogsToMarkdown.ViewModels
             try
             {
                 NotifyPropertyChanged(() => GWBBlogUrl);
+                NotifyPropertyChanged(() => GWBPassword);
                 NotifyPropertyChanged(() => GWBUserName);
                 NotifyPropertyChanged(() => OutputFolder);
                 NotifyPropertyChanged(() => ImagesFolder);
@@ -182,7 +183,6 @@ namespace GeeksWithBlogsToMarkdown.ViewModels
 
         private void OnCancel()
         {
-
             var metroWindow = Application.Current.MainWindow as MetroWindow;
             if (metroWindow != null)
             {
@@ -209,7 +209,7 @@ namespace GeeksWithBlogsToMarkdown.ViewModels
             {
                 //Save
                 Settings.Instance.GWBUserName = GWBUserName;
-                Settings.Instance.GWBPassword = GWBPassword.ToSecureString().EncryptString();
+                Settings.Instance.GWBPassword = GWBPassword;//.ToSecureString().EncryptString();
                 Settings.Instance.GWBBlogUrl = GWBBlogUrl.ToLower();
                 Settings.Instance.OutputFolder = OutputFolder;
                 Settings.Instance.ImagesFolder = ImagesFolder;
@@ -243,7 +243,7 @@ namespace GeeksWithBlogsToMarkdown.ViewModels
 
             if (button.IsChecked.HasValue && button.IsChecked.Value)
             {
-                var decryptedPassword = Settings.Instance.GWBPassword.DecryptString().ToInsecureString();
+                var decryptedPassword = Settings.Instance.GWBPassword;//.DecryptString().ToInsecureString();
                 GWBPassword = decryptedPassword;
             }
         }
@@ -255,7 +255,7 @@ namespace GeeksWithBlogsToMarkdown.ViewModels
                 new LoginDialogSettings
                 {
                     InitialUsername = Settings.Instance.GWBUserName,
-                    InitialPassword = Settings.Instance.GWBPassword.DecryptString().ToInsecureString(),
+                    InitialPassword = Settings.Instance.GWBPassword,//.DecryptString().ToInsecureString(),
                     ShouldHideUsername = false,
                     EnablePasswordPreview = true,
                     ColorScheme = MetroDialogColorScheme.Theme,
