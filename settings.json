@@ -1,0 +1,9 @@
+﻿{
+  "CustomImagesFolder": null,
+  "FrontMatter": "---\nlayout: post\ntitle: <$GWB_TITLE$>\ndate: <$GWB_DATE$>\nauthor: john\ncategories:\n- <$GWB_CATEGORIES$>\ndescription: <$GWB_DESCRIPTION$>\n---",
+  "GWBBlogUrl": "http://www.geekswithblogs.net/john/default.aspx",
+  "GWBPassword": null,
+  "GWBUserName": null,
+  "ImagesFolder": "C:\\Users\\Utkarsh\\Documents\\GWB\\Images",
+  "OutputFolder": "C:\\Users\\Utkarsh\\Documents\\GWB"
+}
