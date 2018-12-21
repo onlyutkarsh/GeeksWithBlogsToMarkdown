@@ -354,6 +354,7 @@ namespace GeeksWithBlogsToMarkdown.ViewModels
             var markdownFileName = $"{suggestedFileName}.md";
 
             var markdownPath = Path.Combine(Settings.Instance.OutputFolder, markdownFileName);
+            if (!Directory.Exists(Settings.Instance.OutputFolder)) Directory.CreateDirectory(Settings.Instance.OutputFolder);
             if (promptBeforFileOverwrite && File.Exists(markdownPath))
             {
                 MessageDialogResult messageDialogResult = await _dialogCoordinator.ShowMessageAsync(this, AppContext.Instance.ApplicationName, "File already exists. Do you want to overwrite?",
