@@ -334,7 +334,8 @@ namespace GeeksWithBlogsToMarkdown.ViewModels
 
                         progressController.SetMessage($"{message}\nDownloading images in post...{imageCount} of {totalImages}");
                         var client = new WebClient();
-
+                        if (url.Value.StartsWith("data:image"))
+                            continue;
                         var imageUri = new Uri(url.Value);
                         var twoWordsFromPost = blogPost.Title.ToLower().Split(' ').Take(4);
                         var imageName = $"{blogPost.DateCreated.ToString("yyyy_MM_dd")}_{string.Join("_", twoWordsFromPost)}_Image{imageCount}{Path.GetExtension(imageUri.AbsoluteUri)}";
